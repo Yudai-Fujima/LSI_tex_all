@@ -1,0 +1,127 @@
+\section{補足資料}
+\subsection{固定ベクトル$v1、v2$の頑健性について}
+高次元のzは球殻上
+
+
+\subsection{ニューラルネットワーク}
+
+% アーティフィシャルニューラルネットワーク (Artificial Neural Network; ANN)は人間の脳構造を模した数理モデルである。以後，簡単のためANNをニューラルネットワーク(NN)として記述する。
+ニューラルネットワークは複数の層から構成され，それぞれの層にはニューロンと呼ばれる計算ユニットが存在する。各ニューロンは他のニューロンと結合されており，その結合には重みが付けられている。この重みがニューラルネットワークの学習の鍵となり，入力データに対する適切な出力を生成するために最適化される。層の構造は入力層，中間層（隠れ層），および出力層に分かれており，隠れ層の数が大きいほどより複雑なデータのパターンを学習する。ニューラルネットワークの構造を\fref{fig:nn}に示す。
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=50mm,keepaspectratio]{figure/nn.png}
+	\caption{ニューラルネットワークの構造}
+	\label{fig:nn}
+\end{figure}
+
+
+\subsubsection*{(1)ニューロン}
+
+
+ニューロンの概略図を\fref{fig:neuron}に示す。ここで，$z_j ^{m}$は第$m$層における$j$番目のニューロンの出力値，$w_{ij}^m$は第$m-1$層$i$番目のニューロンから第$m$層$j$番目のニューロンへの重み，$u_j^m$は第$m$層の$j$番目のニューロンの入力値，$b_j ^m$はバイアス，$f$は活性化関数である。
+
+各ニューロンは，前層の出力値$z^{m-1}$に重み$w^m$をかけた重み付き線形和を計算し，その総和にバイアス$b_j ^m$を加えた値を入力値$u_j ^m$とし\eref{eq:u}で定義する。ニューロンはこの入力値$u_j ^m$を活性化関数$f$に通すことで出力値$z_j ^m=f(u_j ^m)$を得る。
+\begin{align}
+    u_j^m = \sum_{i} w_{ij}^m z_i^{m-1} + b_j^m \label{eq:u}
+\end{align}
+
+ここで，活性化関数$f(u_j ^m)$は，入力された値に非線形変換を行い，出力を生成する。代表的な活性化関数に，\eref{relu}で表されるReLU関数がある。ReLU関数の微分は，入力値が正のとき1，負のとき0となるため，勾配消失問題を緩和する効果がある。
+\begin{equation}
+	\label{relu}
+	f(u_j ^m) = 
+	\begin{cases}
+		u_j^m & (u_j ^m > 0) \\
+		0 & (u_j ^m \leq 0)
+	\end{cases}
+\end{equation}
+
+
+
+\subsubsection*{(2)損失関数}
+損失関数は，ニューラルネットワークの出力値と目標値の差分を表す関数である。ニューラルネットワークは，目標値に対する損失関数$E$の値を最小にするためにユニット間の重みとバイアスを調整する。損失関数の代表的なものに二乗誤差があり，ニューラルネットワークの出力$y_i$と，目標値$d_i$を用いて\eref{eq:loss}で定義する。
+\begin{align}
+    E = \frac{1}{2} \sum_{i} (y_i - d_i)^2 \label{eq:loss}
+\end{align}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/neuron.png}
+	\caption{ニューロンの概略図}
+	\label{fig:neuron}
+\end{figure}
+
+\subsubsection*{(3)最急降下法}
+
+最急降下法は，損失関数を最小化するために，損失関数の勾配を用いて重み$w$を更新する手法である。最急降下法は，パラメータ$w$を\eref{eq:w}で更新する。
+\begin{align}
+    w \leftarrow w - \eta \frac{\partial E}{\partial w} \label{eq:w}
+\end{align}
+
+
+
+\subsubsection*{(4)誤差逆伝播法}
+誤差逆伝播法は，出力層から入力層に向かって，各層の重みを更新する手法である。誤差逆伝播法は，出力層の誤差を計算し，その誤差を入力層に向かって逆伝播させることで，各層の重みを更新する。誤差逆伝播法の手順を以下に示す。
+
+\subsection*{\underline{出力層}}
+$L$層のニューラルネットワークにおける出力層の重みの更新量を考える。損失関数$E$の$w_{ij}^L$に関する偏微分を連鎖律を用いて\eref{eq:23-1}に示す。
+\begin{align}
+    \frac{\partial{E}}{\partial{w_{ij}^L}}=\frac{\partial{E}}{\partial{u_j^L}}\cdot\frac{\partial u_j^L}{\partial w_{ij}^L}= \delta_j^L z_i^{L-1}\label{eq:23-1}
+\end{align}
+
+ここで，$u_j^L$は\eref{eq:23-2}で表されるから，$u_j^L$を$w_{ij}^L$で偏微分すると$z_i^{L-1}$となる。
+\begin{align}
+    u_j^L &= \sum_{i} w_{ij}^L z_i^{L-1} + b_j^L\notag\\
+    &=w_{1j}^L z_1^{L-1} + w_{2j}^L z_2^{L-1} + \ldots +w_{ij}^L z_i^{L-1}\notag\\
+    &  \hspace{8pt}+\ldots + w_{nj}^L z_n^{L-1} + b_j^L \label{eq:23-2}
+\end{align}
+
+次に，$\delta_j^L$を連鎖律を用いて\eref{eq:23-3}に示す。
+\begin{align}
+    \delta_j^L = \frac{\partial E}{\partial u_j^L} = \frac{\partial E}{\partial z_j^L} \cdot \frac{\partial z_j^L}{\partial u_j^L}  \label{eq:23-3}
+\end{align}
+
+ここで，損失関数$E$が\eref{eq:loss}で表せることと，$z_j^L$が出力値$y_j$であることから，損失関数$E$の$z_j^L$に関する偏微分は\eref{eq:23-4}で表される。
+\begin{align}
+    \frac{\partial E}{\partial z_j^L} = \frac{\partial}{\partial y_j} \left( \frac{1}{2} \sum_{i} (y_i - d_i)^2 \right) = y_j - d_j \label{eq:23-4}
+\end{align}
+
+また，活性化関数$f$をReLU関数とすると，$z_j^L=f(u_j^L)=u_j^L$であるから，$z_j^L$に関する$u_j^L$の偏微分は1となる。したがって，\eref{eq:23-1}は\eref{eq:23-5}に変形できる。
+\begin{align}
+    \frac{\partial{E}}{\partial{w_{ij}^L}} = (y_j - d_j)z_i^{L-1} \label{eq:23-5}
+\end{align}
+
+\eref{eq:23-5}において，$y_j$は出力値，$d_j$は目標値，$z_i^{L-1}$は前層の出力値であるから，第$L$層において計算可能な値である。
+
+\subsubsection*{\underline{中間層}}
+第$l$層の重みの更新量を考える。損失関数$E$の$w_{ij}^l$に関する偏微分を連鎖律を用いて\eref{eq:23-6}に示す。
+\begin{align}
+    \frac{\partial{E}}{\partial{w_{ij}^l}}=\frac{\partial{E}}{\partial{u_j^l}}\cdot\frac{\partial u_j^l}{\partial w_{ij}^l}= \delta_j^l z_i^{l-1}\label{eq:23-6}
+\end{align}
+
+中間層における誤差分$\delta_j^l$を考えるにあたって，第$l$層と第$l+1$層におけるニューロン間の入出力関係を\fref{fig:neuron2}に示す。
+
+
+
+
+
+損失関数$E$の定義は\eref{eq:loss}であるから，第$l$層の重み更新には第$l+1$層の出力値が必要となる。第$l+1$層の入力値$u_i^{l+1}$は第$l$層の出力値$u_j^l$の関数でもあるから，損失関数$E$は$E(u_1^{l+1}(u_j^l), u_2^{l+1}(u_j^l), \ldots, u_k^{l+1}(u_j^l))$の関数としてみることができる。したがって，損失関数$E$の$u_j^l$に関する偏微分は多変数関数の連鎖律を用いて\eref{eq:23-7}となる。
+\begin{align}
+    &\delta_j^l=
+    \frac{\partial{E}}{\partial{u_j^l}} = 
+    \sum_{k} \frac{\partial{E}}{\partial{u_k^{l+1}}} \cdot \frac{\partial{u_k^{l+1}}}{\partial{u_j^l}} \notag\\
+    &=\sum_{k}\delta_k^{l+1} \cdot \left[\frac{\partial{u_k^{l+1}}}{\partial{z_j^l}}\cdot\frac{\partial{z_j^l}}{\partial{u_j^l}}\right]=\sum_{k}\delta_k^{l+1} \cdot w_{kj}^{l+1}\label{eq:23-7}
+\end{align}
+
+
+ここで，最後の式変形において$\frac{\partial{u_k^{l+1}}}{\partial{z_j^l}}=w_{kj}^{l+1}$，$\frac{\partial{z_j^l}}{\partial{u_j^l}}=1$を用いた。$\delta_k^{l+1} $および$w_{kj}^{l+1}$の値は第$l+1$層の値であるため，出力層側から更新を行うことで既知の値となる。つまり，第$l$層目の$\delta_j^l$の値は第$l+1$層目の$\delta_k^{l+1} (k=1,2, \ldots)$から求まる。このように，誤差逆伝播法では出力層から入力層に向かって誤差を逆伝播させることで，各層の重みの更新を行う。
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=27mm,keepaspectratio]{figure/neuron2.png}
+	\caption{第$l$層と第$l+1$層におけるニューロン間の入出力関係}
+	\label{fig:neuron2}
+\end{figure}
+
+\subsection{CNN}
+
+
+\subsection{逆畳み込み演算}

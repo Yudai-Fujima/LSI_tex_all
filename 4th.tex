@@ -1,0 +1,164 @@
+\section{本システムの構成}
+入力は100次元のランダムノイズ$z$で32×32の画像を出力するようなGeneratorを学習する。ここで、値が固定の100次元のランダムノイズ$v1$、$v2$を用いることで、$z$はR画像の学習、$z+v_1$はG画像の学習、$z+v_2$はB画像の学習を行う。
+
+Discriminatorでは、32×32の画像を見てそれが偽物（Gが生成）か本物（正解画像）かの確率を0～1で出力する（本物:1、偽物:0）。本システムでは、カラー画像の精度向上のため、2種類のDiscriminatorを用意した。1つ目のDiscrininatorでは、Generatorの出力するグレースケール画像（R,G,B）に対し、グレースケールの正解画像と比較を行うことでアバターの形としての正しさを評価する。2つ目のDiscriminatorでは、$z、z+v1、z+v2$の入力で得たR画像、G画像、B画像を用いて作成した偽物のカラー画像と正解カラー画像との比較で正誤の確率を出力する。このように、Discriminatorの役割をアバターの形と色に分担を行うことで精度の向上を図った。
+
+
+\subsection{FPGA実装時のイメージ}
+% FPGA実装には、Generatorネットワークを実装し、ランダムな100次元の入力に対し32×32の画像を生成を目指す。カラー化のためには3chの出力が必要であるが、メモリの都合上FPGAで32×32×3chの画像を出力をすることは難しい。そこで、値が固定の100次元のランダムノイズ$v1$、$v2$を用いて、$z$はR画像の学習、$z+v_1$はG画像の学習、$z+v_2$はB画像の学習を行う。そうすることで、ランダムな100次元入力$z$に対し、$z$の出力をR画像、$z+v1$の出力をG画像、$z+v2$の出力をB画像とすることでカラー化ができる。R用ネットワーク、B用ネットワーク、G用ネットワークを学習した場合、FPGAにパラメータを送りなおす必要があるが、本システムでは、入力をz、z+v1、z+v2のように工夫することで一つのネットワークでカラー画像を出力できることが強みである。
+
+
+FPGA 実装では Generator ネットワークのみを実装し，100 次元の入力に対して $32 \times 32$ の画像生成を行うことを目指す。カラー画像を生成するには3ch（RGB） の出力が必要であるが，メモリ制約のためFPGA上で$32 \times 32 \times 3ch$の画像を同時に出力することは困難である。
+
+そこで本システムでは，固定値の 100 次元ベクトル $v_1, v_2$ を導入し，入力 $z$ に対して $z$，$z+v_1$，$z+v_2$ の3種の入力を作成する。具体的には，$z$ をR画像の学習，$z+v_1$ をG画像の学習，$z+v_2$ をB画像の学習に対応付ける(\fref{fg:RGB_train})。
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/RGB_train.png}
+	\caption{固定ベクトルを用いたRGB学習}
+	\label{fg:RGB_train}
+\end{figure}
+
+学習したパラメータおよび固定ベクトル$v_1,v_2$をFPGA実装することで、任意の100 次元入力$z$入力すると、FPGA内部で$z$，$z+v_1$，$z+v_2$の3種のベクトルに対する演算を行うことができ、R・G・Bに対応した画像を生成できる(\fref{fg:RGB_FPGA})。
+
+R 用・G 用・B 用に別々のネットワークを学習する場合、FPGAへパラメータを都度転送する必要がある。一方、本方式では入力をz、z+v1、z+v2のように工夫することで一つのネットワークでカラー画像を出力できることが強みである。
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/RGB_FPGA.png}
+	\caption{FPGA実装時のカラー化演算イメージ}
+	\label{fg:RGB_FPGA}
+\end{figure}
+
+
+
+\subsection{データセット}
+キャラメル(CharaMEL0.9.0)というフリーソフトを用いて、32×32のアバターを生成した。本ソフトでは、アバターの目、髪型、髪色、服装、アクセサリーなどの要素を任意にカスタマイズすることが可能である。本実験では、\fref{fig:grid_3x3} に示すような多様な外観を持つアバターを 275 種類生成し、これらを学習用データセットとして用いた。
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=37mm,keepaspectratio]{figure/grid_3x3.png}
+	\caption{入力データの一部}
+	\label{fig:grid_3x3}
+\end{figure}
+
+
+
+\subsection{ネットワーク構成}
+本システムでは、\tref{tab:network_io}に示す3つのネットワークを用いて学習を行う。各ネットワークの構造については、4.2.1～4.2.3 節で詳細に説明する。
+\begin{table}[H]
+	\centering
+    \caption{各ネットワークの入出力構成}
+	\label{tab:network_io}
+	\includegraphics[width=70mm,keepaspectratio]{figure/tb1.png}
+\end{table}
+% \begin{table*}[b]
+% \centering
+% \caption{各ネットワークの入出力構成}
+% \label{tab:network_io}
+% \begin{tabular}{l l l}
+% \hline
+% ネットワーク & 入力 & 出力 \\
+% \hline
+% Generator 
+% & 100 次元ランダムノイズ 
+% & $32 \times 32$ グレー画像（R, G, B） \\
+
+% Discriminator$_{\text{grey}}$ 
+% & $32 \times 32$ グレー画像（R, G, B） 
+% & 本物・偽物の判別確率(0～1) \\
+
+% Discriminator$_{\text{color}}$ 
+% & $32 \times 32 \times 3$ カラー画像（RGB） 
+% & 本物・偽物の判別確率(0～1) \\
+% \hline
+% \end{tabular}
+% \end{table*}
+
+
+\subsubsection{Generator}
+Generatorの構成は、DCGAN\cite{radford_unsupervised_2016}のネットワークを参考とした。Generatorのネットワーク構造を\fref{fg:Gen}に示す。本ネットワークは、入力として100次元の潜在変数$z$を受け取り、逆畳み込み層(ConvTranspose2d)を用いて段階的に空間解像度を拡大する構造を有する。具体的には、1×1の潜在特徴マップを 4×4、8×8、16×16と段階的にアップサンプリングし、最終的に32×32の画像を生成する。各逆畳み込み層の後にはReLU関数を適用し、非線形性を導入することで表現能力を高めている。最終層ではTanh関数を用い、出力値を [-1,1] の範囲に正規化する。
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/Generator.png}
+	\caption{Generatorのネットワーク構造}
+	\label{fg:Gen}
+\end{figure}
+
+\subsubsection{Discriminator(grey)}
+Discriminator(grey)は，$32 \times 32$（1ch）のグレースケール画像を入力とし、畳み込み層により空間解像度を段階的に縮小しながら特徴量を抽出する。最終的に、全結合層の出力をsigmoid関数に通すことで0～1 のスコア（本物らしさ）を出力する。本ネットワークの構成を\fref{fg:Dis_g} に示す。ここで、Generatorとは異なりLeaky ReLU関数およびBatch正規化を用いているが、これは DCGAN における学習安定性および性能向上を目的としたものであり、参考文献 \cite{article} に基づいている。
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/Discriminator_grey.png}
+	\caption{Discrminatorのネットワーク構造}
+	\label{fg:Dis_g}
+\end{figure}
+
+\subsubsection{Discriminator(color)}
+本ネットワークは、Discriminator(grey)の入力をカラー画像(3ch)に変更することで構成される。Discriminator(grey)では、アバターの形状に注目して判別を行うのに対し、Discriminator(color)ではアバターの色の相関関係に注目して判別を行うことで、Discriminatorの判別性能を向上することを目的として構成した。
+
+\subsection{訓練パラメータ}
+学習に用いたパラメータを\tref{tab:training_param}に示す。
+\begin{table}[htbp]
+\centering
+\caption{学習パラメータ設定}
+\label{tab:training_param}
+\begin{tabular}{l l}
+\hline
+項目 & 設定値 \\
+\hline
+学習回数 & 10000 \\
+
+学習率(生成器) & $1.0 \times 10^{-4}$ \\
+
+学習率(識別器) & $1.0 \times 10^{-6}$ \\
+
+バッチサイズ & 64 \\
+
+
+Adam $\beta_1$ & 0.5 \\
+
+Adam $\beta_2$ & 0.999 \\
+
+入力ノイズ次元 & 100 \\
+
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{学習結果（ソフトウェア）}
+学習済みGeneratorに新たなランダムノイズを入力したときの出力結果を\fref{fg:output}に示す。\fref{fg:output}より、Generatorはアバターの特徴を学習しており、髪型や服装の異なる多様なアバターを生成できていることが分かる。\fref{fg:output}中の2番および5番は正解画像に近い生成結果となっている。一方で、1番および4番の服装に見られる黄色いラインは正解データセットには存在しない。また、3番の水色のシャツにネクタイを着用したような画像も正解データセット内には見られない。これらの例から、Generatorは単なる学習画像の再現にとどまらず、アバターの特徴を保持しつつ新規性を含む画像を生成できていると考えられる。なお、6番の画像では服装がぼやけたように見えるが、これはDiscriminatorの識別性能が十分でなく、6番のようなぼやけを含む画像も正解として判別されてしまったと考える。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=50mm,keepaspectratio]{figure/output.png}
+	\caption{6種のランダム入力に対する出力結果}
+	\label{fg:output}
+\end{figure}
+
+\subsubsection{ランダム空間の学習の確認}
+100次元ランダム入力$z$は、平均0、分散1の独立な正規分布$\mathcal{N}(0,1)$ に従う乱数として生成される。新たにサンプリングされる$z_1, z_2$も同様の正規分布から生成されている。つまり、Generator はこの連続な潜在空間$z$から画像空間への連続写像$G(z)$を学習することで、多様なアバター画像を生成していると解釈できる。
+
+これを確かめるために、ランダムな2つの入力ベクトル$z_1, z_2$に対し、その間を線形補間した3点の入力ベクトルから生成した画像を\fref{fg:hokan}に示す。線形補間により得られるベクトル$z(t)$は次式で定義される($N=3$)。
+% \begin{align}
+% z(t) &= (1-t)\,z_1 + t\,z_2 \qquad (0 \le t \le 1), \\
+% t &\in \left\{ \frac{1}{4}, \frac{2}{4}, \frac{3}{4} \right\}.
+% \end{align}
+\begin{align}
+z(t_k) &= (1-t_k)\,z_1 + t_k\,z_2, \\
+t_k &= \frac{k}{N+1}, \quad k = 1,2,\dots,N.
+\end{align}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/interp1.png}
+	\caption{3種のランダム入力セットに対する補間結果}
+	\label{fg:hokan}
+\end{figure}
+\fref{fg:hokan}の結果から、GANでは入力$z$に対して正解画像を学習しているのではなく、$z$という連続空間に対してアバターらしい画像を学習していることが分かる。また、隣接する画像を比較すると形状が似ているものが多く、画像を確率分布として学習していることが分かる。
+
+% 教師あり学習のようにピクセル一致で学習した場合、任意の2入力に対する補間点における出力は、あくまで二つの画像の和を取り2で割ったような画像になるが、GANのように画像を確率分布として学習することで、任意の2入力の間の補間点における画像も意味を持った新しい画像として生成できるため、データセット拡張において優位性があるといえる。
+
+画素単位の一致を目的とした教師あり学習では、任意の2入力における補間点に対応する出力は、それぞれの教師画像の画素値を平均化したような結果になりやすく、視覚的にぼやけた画像が生成される傾向がある。一方、GAN は画像を確率分布としてモデル化し、潜在空間$z$から画像空間への写像$G(z)$を学習するため、任意の2つの潜在変数間の補間点においても、意味的に一貫性を保った新しい画像を生成することが可能である。この性質により、GAN は単なる画素補間では得られない多様な画像を生成でき、
+データセット拡張の観点において優位性を有するといえる。
