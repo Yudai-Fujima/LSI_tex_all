@@ -31,6 +31,16 @@ Bingqi Liu, Jiwei Lv, Xinyue Fan, Jie Luo, and Tianyi Zou.
 \newblock {\em Mobile Information Systems}, Vol. 2022, No.~1, p. 9005552, 2022.
 \newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1155/2022/9005552.
 
+\bibitem{amd_ug1267_zcu104}
+{Advanced Micro Devices, Inc.}
+\newblock {\em {ZCU104 Evaluation Board User Guide}}.
+\newblock {AMD}.
+
+\bibitem{amd_pynq}
+{Advanced Micro Devices, Inc.}
+\newblock {\em {What is PYNQ}}.
+\newblock {AMD}.
+
 \bibitem{vershynin_introduction_nodate}
 Roman Vershynin.
 \newblock An {Introduction} with {Applications} in {Data} {Science}.

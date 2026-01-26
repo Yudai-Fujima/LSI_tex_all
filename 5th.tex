@@ -1,6 +1,6 @@
 \clearpage
 \section{使用機器について}
-本システムのハードウェア実装には、AMD $\rm{Zynq^{TM}}$ $\rm{UltraScale+^{TM}}$ MPSoC ZCU104 Evaluation Kitを用いた。また、AMDの提供するPython productivity for Zynq(PYNQ)と呼ばれるオープンソースプロジェクトを活用し、ブラウザ上からJupyter Notebookを通じてFPGAボードを動作させるシステムを構築した。本節では使用機器についての解説と仕様説明を行う。
+本システムのハードウェア実装には、AMD $\rm{Zynq^{TM}}$ $\rm{UltraScale+^{TM}}$ MPSoC ZCU104 Evaluation Kitを用いた\cite{amd_ug1267_zcu104}。また、AMDの提供するPython productivity for Zynq(PYNQ)\cite{amd_pynq}と呼ばれるオープンソースプロジェクトを活用し、ブラウザ上からJupyter Notebookを通じてFPGAボードを動作させるシステムを構築した。本節では使用機器についての解説と仕様説明を行う。
 
 \subsection{Zynq UltraScale MPSoCの概要}
 Zynq UltraScale MPSoCとは、ARMプロセッサ（PS）とFPGA（PL）を1チップに統合したSoCである。PS部、PL部それぞれの仕様は表\ref{tb:pl}, \ref{tb:ps}のようになっている。本ボードの最大の特徴は、ソフトウェアとハードウェアを同一チップ上で高速かつ低遅延に動作させられる点である。本回路ではPL部とPS部間の通信にAXIインターフェースの中でも扱いやすいAXI4-Liteを用いており、APUとFPGA間の通信が可能となっている。
@@ -32,39 +32,41 @@ Zynq UltraScale MPSoCとは、ARMプロセッサ（PS）とFPGA（PL）を1チ�
     \end{tabular}
 \end{table}
 
-\subsection{PynQの概要}
+\subsection{PYNQの概要}
 Python productivity for Zynq(PYNQ)は、Linux上で動作するPython APIを用いてZynq SoCのPL部を制御・利用するためのフレームワークである。本フレームワークを用いることにより、以下のような利点がある。
 \begin{itemize}{
     \item Libraryが豊富なPythonを利用して、PL部の制御を行える
     \item Linux環境下で動作させられるため、柔軟性のある開発環境が実現可能
     \item Webブラウザ上でJupyter Notebookを利用した直感的な操作が可能
 }\end{itemize}
-このように、PynQを用いることで迅速な開発やPythonを利用できる幅広いユーザに対して製品を提供することが可能となる。また、評価ボードをインターネットに接続することで、
-別 PC から Jupyter Notebook を介してアクセスすることが可能であり、評価ボードの遠隔操作やファイル転送を容易に行える。そのため、本フレームワークは IoT システムとしての実用化にも適している。このことから本システムにおいても、システムの実用化に向けてPynQを利用した開発を行う。
+このように、PYNQを用いることで迅速な開発やPythonを利用できる幅広いユーザに対して製品を提供することが可能となる。また、評価ボードをインターネットに接続することで、
+別 PC から Jupyter Notebook を介してアクセスすることが可能であり、評価ボードの遠隔操作やファイル転送を容易に行える。そのため、本フレームワークは IoT システムとしての実用化にも適している。このことから本システムにおいても、システムの実用化に向けてPYNQを利用した開発を行う。
 
 \section{システム構成と動作説明}
-本システムでは、ramや配線数等のリソースの影響を考慮した結果、前述した学習モデルの中でもGenaratorのみをFPGAボードに実装し、エミュレータで学習したパラメータを使用した。本章では設計したシステムのアーキテクチャからPS部、PL部それぞれの構成、およびその動作について説明する。
+本章では設計したシステムのアーキテクチャからPS部、PL部それぞれの構成、およびその動作について説明する。
 
 \subsection{システムのアーキテクチャ}
-本システムのアーキテクチャは図\ref{fig:arch}のようになっている。ram等のリソース量を考慮し、エミュレータで実装した学習したパラメータを使用して生成部のみの実装を行った。使用機器についてでも記述した通り、本システムは大きく分けてPS部とPL部に分かれている。PS部は、保存された入力データおよび重みをPL部に送る役割を担う。またPL部の動作を制御する制御信号を送ることで動作モードを遷移させ、PL部の動作を処理の進行に合わせて適切に変化させる役割も担っている。一方、PL部はPSとPL間の通信を担うAXI-LITE、PS側から送られたデータをGeneratorに適切な形、タイミングで転送するモジュール、そしてGeneratorの大きく分けて３つの回路で構成されている。これらのシステム全体の動作概要は以下の通りである。
+本システムのアーキテクチャは図\ref{fig:arch}のようになっている。Block RAM等のリソース量を考慮し、エミュレータで実装した学習したパラメータを使用して生成部のみの実装を行った。８章でも記述した通り、本システムは大きく分けてPS部とPL部に分かれている。PS部は、保存された入力データおよび重みをPL部に送る役割を担う。またPL部の動作を制御する制御信号を送ることで動作モードを遷移させ、PL部の動作を処理の進行に合わせて適切に変化させる役割も担っている。一方、PL部はPSとPL間の通信を担うAXI-LITE、PS側から送られたデータをGeneratorに適切な形、タイミングで転送するモジュール、そしてGeneratorの大きく分けて３つの回路で構成されている。これらのシステム全体の動作概要は以下の通りである。
 \begin{enumerate}
-    \item AXI-LITE形式でPS側からPL側に100次元入力を送信する
-    \item AXI-LITE形式でGeneratorの入力用RAMにデータ転送する開始信号を送る
-    \item AXI-LITE形式でPS側からPL側に推論に必要な重みのうち、１層分のさらに１出力要素を得るために必要な重みを送信する
+    \item AXI-LITE形式でPS側からPL側に図中Input Vecotrで示される100次元入力を送信する
+    \item AXI-LITE形式でGeneratorの入力用RAMにデータ転送する開始信号（Control signal）を送る
+    \item AXI-LITE形式でPS側からPL側に推論に必要な重みのうち、１層分のさらに１出力要素を得るために必要な重み（Weight of 1-4 layersの一部）を送信する
     \item AXI-LITE形式でGeneratorの重み用RAMにデータ転送する開始信号を送る、PSは演算が終了するまで待機する
     \item １出力を得るために必要な入力$x$および重み$w$を取得した後、Generatorは計算を開始する
-    \item RAMに保存された重みを使い切ると、Generator回路が1出力の演算終了信号を送信し、AXI-LITE形式でPS側がこれを受け取る
+    \item RAMに保存された重みを使い切ると、Generatorが1出力の演算終了信号を送信し、図中end\_signalとしてAXI-LITE形式でPS側が受け取る
     \item 3 - 6の手順を繰り返し、１層分の出力を得る。この時、１層分の演算終了信号がPS側に送信される
     \item さらに3 - 7の手順を繰り返すことで4層分の演算を行う。この時、演算終了信号が送信される。
     \item ４層分の演算終了後、AXI-LITE形式でPL側が出力したアバター画像をPS側に送信する
 \end{enumerate}
-特に手順3-6については、図\ref{fig:cal_tejyun}で補足説明を行う。エミュレータで実装したCNNモデルのうち、特に１層目、２層目は図\ref{fig:cal_tejyun}のようになっている。１層目では100次元の入力ベクトルに対して$4\times4$のカーネルを$512\times100$要素掛け合わせることで出力を獲得し、これにReLu関数を適用したものを2層目の入力として用いる。このような試行を4層分繰り返すことでアバター画像を出力することができる。本回路では特に、それぞれの層の出力の１要素を求めるために必要な重み要素である図\ref{fig:cal_tejyun}中の1paked weight（$1\times100$要素）のみをPS部からPL部に送信する。そして、この重みと入力の掛け算を行う試行をそれぞれの要素の出力要素分行うことで１層分の計算を終了する回路とした。本回路構成を採用した理由と解説については、○○章のハードウェア上の工夫点にて詳しく解説する。
+特に手順3-6については、図\ref{fig:cal_tejyun}で補足説明を行う。エミュレータで実装したCNNモデルのうち、特に１層目、２層目は図\ref{fig:cal_tejyun}のようになっている。１層目では100次元の入力ベクトルに対して$4\times4$のカーネルを$512\times100$要素掛け合わせることで出力を獲得し、これにReLU関数を適用したものを2層目の入力として用いる。このような試行を4層分繰り返すことでアバター画像を出力することができる。本回路では特に、それぞれの層の出力の１要素を求めるために必要な重みである図\ref{fig:cal_tejyun}中の1paked weight（$1\times100$要素）のみをPS部からPL部に送信する。そして、この重みと入力の掛け算を行う試行をそれぞれの要素の出力要素分行うことで１層分の計算を終了する回路とした。本回路構成を採用した理由と解説については、11章のハードウェア上の工夫点にて詳しく解説する。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\linewidth]{fig_fuji/layer_caluculation.png}
 	\caption{計算手順の概要}
 	\label{fig:cal_tejyun}
 \end{figure}
+
+
 \begin{figure*}[h]
 	\centering
 	\includegraphics[width=1.0\linewidth]{fig_fuji/arch_lsi.png}
@@ -74,7 +76,7 @@ Python productivity for Zynq(PYNQ)は、Linux上で動作するPython APIを用�
 
 \subsection{PL側の回路設計}
 \subsubsection*{\textbf{AXI-LITE}}
-本回路では、AXI-4という規格の中でもAXI-LITEを用いた通信方式を採用した。AXI規格とは、ARM社が使用を策定したバスプロトコルであり、開発者側は共通のインターフェースを用いてPSとPL間の通信を可能である。特にAXI-LITE Moduleは図\ref{fig:AXI-LITE}のようにあらわされる。図\ref{fig:AXI-LITE}からわかるようにAXI-LITEはアドレス指定により異なる制御を行うことができる利点がある。本回路では特に表\ref{tb:AXI-seigyo}のようにアドレスマップを作成し、PSからAXI-LITEを通じて細かくPLの制御を行えるような設計とした。この設計により、前述した複雑な計算手順をPythonを利用して極めて正確かつ簡単に行うことができるような設計となっている。具体的に１つの層を例にとって、実際の動作手順を説明する。
+本回路では、AXI-4という規格の中でもAXI-LITEを用いた通信方式を採用した。AXI規格とは、ARM社が使用を策定したバスプロトコルであり、開発者側は共通のインターフェースを用いてPSとPL間の通信を行う。特にAXI-LITE Moduleの回路構成を図\ref{fig:AXI-LITE}に示す。図\ref{fig:AXI-LITE}からわかるようにAXI-LITEはアドレス指定により異なる制御を行うことができる利点がある。本回路では特に表\ref{tb:AXI-seigyo}のようにアドレスマップを作成し、PSからAXI-LITEを通じて細かくPLの制御を行えるような設計とした。この設計により、前述した複雑な計算手順をPythonを利用して極めて正確かつ簡単に行うことができるような設計となっている。具体的に１つの層を例にとって、実際の動作手順を説明する。
 \begin{enumerate}
     \item 100次元入力を送信するため、slv\_reg0に00001をセットする（リセット信号はアクティブロー）
     \item GeneratorのRAMに入力信号を読み込ませるため、計算開始信号を立てる（slv\_reg0に00011）
@@ -115,7 +117,7 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 \end{figure}
 
 \subsubsection*{\textbf{Generator}}
-エミュレータで学習を行ったパラメータと計算精度をもとにして、100次元入力から$32\times32$のアバター画像を生成する計算部分。次節にて詳しい説明を述べる。
+エミュレータで学習を行ったパラメータと計算精度をもとにして、100次元入力から$32\times32$のアバター画像を生成する計算部分である。次節にて詳しい説明を述べる。
 
 \section{計算回路の設計}
 本章では、提案するGANアバター生成システムの核となる計算回路のFPGA実装について、その詳細な設計内容を記述する。
@@ -124,7 +126,7 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=1.1\textwidth,keepaspectratio]{fig_doi/image_top_module.png}
+    \includegraphics[width=\textwidth,keepaspectratio]{figure/image_top_module_new.png}
     \caption{計算モジュールの階層構造と詳細データフロー図}
     \label{fig:hierarchy_dataflow}
 \end{figure*}
@@ -135,21 +137,21 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 \fref{fig:hierarchy_dataflow}に示した全体のデータフローを解説する前に、本項ではシステムを構成する主要な8つのハードウェアモジュールの役割について定義する。
 \begin{enumerate}
     \item \textbf{Input\_Deserializer}:
-    外部から1クロックで一括して供給される100次元のノイズデータ（8bit $\times$ 100要素）を受け取る入力インターフェースである。本モジュールは、800bitの並列データを8bit単位に分割し、それぞれ演算用の16bit幅へビット拡張して順次転送する。
+    外部から1クロックで一括して供給される100次元のランダムデータ（16bit $\times$ 100要素）を受け取るインターフェースである。本モジュールは、1600bitの並列データを16bit単位に分割し、それぞれ演算用の16bit幅のFeature\_RAMに順次転送する。
 
     \item \textbf{Feature\_RAM / Weight\_RAM}:
-    演算に必要なデータを保持するメモリである。Feature\_RAMは入力特徴マップ（16bit）を保持し、Weight\_RAMは学習済みの重みパラメータを保持する。特にWeight\_RAMでは、データ転送効率向上の観点から、$2 \times 2$のカーネル要素（4つ）を1つのアドレスに集約して保持する仕様にした。そのため、8bitの重みデータを4つ結合した32bitパケットとして管理する。
+    演算に必要なデータを保持するメモリである。Feature\_RAMは入力特徴マップ（16bit）を保持し、Weight\_RAMは学習済みの重みパラメータを保持する。特にWeight\_RAMでは、データ転送効率向上の観点から、$4 \times 4$のカーネルのうち$2 \times 2$のカーネル要素（4つ）を1つのアドレスに集約して保持する仕様にした。そのため、8bitの重みデータを4つ結合した32bitパケットとして管理する。
 
     \item \textbf{deconv\_layer}:
     本システムの演算の中核を担うモジュールである。第1層から第4層までの転置畳み込み演算を担当し、メモリからデータを読み出して積和演算を実行する。
 
     \item \textbf{Accumulator\_RAM}:
-    積和演算の途中経過を保持する32bit精度の累積加算用メモリである。詳しくは、○○で説明する。
+    積和演算の途中経過を保持する32bit精度の累積加算用メモリである。
 
     \item \textbf{Saturation}:
     Accumulator\_RAMから読み出された32bitの演算結果に対し、飽和演算を行いながら16bit幅へ丸め処理を行うモジュールである。
 
-    \item \textbf{ReRU}:
+    \item \textbf{ReLU}:
     中間層（第1～3層）において使用される活性化関数モジュールである。負の値を0にする非線形処理を行う。
 
     \item \textbf{Tanh\_LUT}:
@@ -162,11 +164,11 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 \subsubsection{全体のデータフロー}
 前項で定義したモジュール群は、最上位階層であるtop\_moduleによって統合管理され、データは以下のフローに従って処理される。
 
-まず、外部より供給されたノイズ入力$z$は、Input\_Deserializerによって個別に切り分けられ、Feature\_RAMに格納される。並行して、重み値$w$もWeight\_RAMにロードされる。
+まず、外部より供給さランダム入力$z$は、Input\_Deserializerによって個別に切り分けられ、Feature\_RAMに格納される。その後、重み値$w$もWeight\_RAMにロードされる。
 
 演算フェーズでは、各層に対応するdeconv\_layerが順次起動される。deconv\_layerは、Feature\_RAMおよびWeight\_RAMから必要なデータを読み出し、内部演算コアkernel\_multipleへ供給する。演算された積和結果は、Accumulator\_RAMに対して順次加算され、畳み込み結果が形成される。
 
-1層分の演算が完了すると、データはAccumulator\_RAMから読み出され、Saturationで16bitに圧縮される。その後、中間層の場合は、データは活性化関数ReRUを経て、次層の入力特徴マップとして再びFeature\_RAMへ書き戻される。
+1層分の演算が完了すると、データはAccumulator\_RAMから読み出され、Saturationで16bitに圧縮される。その後、中間層の場合は、データは活性化関数ReLUを経て、次層の入力特徴マップとして再びFeature\_RAMへ書き戻される。
 一方、最終層の場合、データはTanh\_LUTに入力され、画素値として整形された後にOutput\_Serializerを介して画像データimage\_outとして外部へ出力される。
 
 このように、層によってデータの行き先を切り替える構成をとることで、限られた回路リソースを有効活用しながら、スムーズな処理を実現している。
@@ -176,7 +178,7 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 \begin{figure*}[t]
     \centering
     % BANANAで作成した図を image_top_fsm_simple.png として保存してください
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{fig_doi/FSM_top_module.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{figure/FSM_top_module.png}
     \caption{全体制御ステートマシンの簡略化状態遷移図}
     \label{fig:top_fsm_simple}
 \end{figure*}
@@ -189,7 +191,7 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 \begin{enumerate}
     \item \textbf{入力値の展開（Load\_Input）}: start\_xを受信すると、Input\_Deserializerが起動する。ここでは一度に受け取った並列データを、クロックに同期して順番に切り分けてFeature\_RAMへ書き込む。
 
-    \item \textbf{入力値の格納待機（Wait 1）}: Load\_Inputから来た場合は、全データの格納が完了するまで待機する。Move\_Dataから来た場合は、全データの転送が完了するまで待機する。
+    \item \textbf{入力値の格納待機（Wait 1）}: Load\_Inputから来た場合は、全データの格納が完了するまで待機する。Move\_Dataから来た場合は、Feature\_RAMに対して全データの転送が完了するまで待機する。
 
     \item \textbf{重み値のロード（Load\_Weights）}: 外部からのstart\_w信号がHighになっている期間、ステートマシーンは毎クロック32bit幅の重み値をそのままWeight\_RAMに格納する。
     
@@ -201,7 +203,7 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
     
     \item \textbf{チャネルループ判定（Check\_Loop 1）}: 同一層内の演算継続可否を判定する。
     \begin{itemize}
-        \item \textbf{チャネル継続}: 未計算のチャネルが残っている場合、start\_w信号に従い、次の重みをロードする。
+        \item \textbf{チャネル継続}: 未計算の出力チャネルが残っている場合、start\_w信号に従い、次の重みをロードする。
         \item \textbf{層完了}: 層内の全チャネル計算が完了している場合、完了信号layer\_doneに従い、次の判定ステートへ移行する。
     \end{itemize}
 
@@ -211,50 +213,17 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
         \item \textbf{全完了（最終層）}: 第4層の演算が完了している場合、完了信号all\_layers\_doneに従い、Serialize\_Outへ遷移する。
     \end{itemize}
 
-    \item \textbf{データ更新（Move\_Data）}: Accumulator\_RAMにある演算結果を1クロックごとに読み出し、SaturationおよびReRU活性化関数を通してFeature\_RAMへ書き戻す。その後は、次層の重みをロードして演算を行う。
+    \item \textbf{データ更新（Move\_Data）}: Accumulator\_RAMにある演算結果を1クロックごとに読み出し、SaturationおよびReLU活性化関数を通してFeature\_RAMへ書き戻す。その後は、次層の重みをロードして演算を行う。
 
     \item \textbf{最終出力（Serialize\_Out）}: Accumulator\_RAMから演算結果を読み出し、SaturationとTanh\_LUT、Output\_Serializerを通して、出力用レジスタimage\_outに格納される。全画素の格納が完了した時点で、画像データ全体がまとめて外部へ出力される。
 \end{enumerate}
-
-\begin{comment}
-\begin{enumerate}
-    \item \textbf{入力データの展開（Load\_Input）}: start\_xを受信すると、Input\_Deserializerが起動する。ここでは一度に受け取った並列データを、クロックに同期して順番に切り分けてFeature\_RAMへ書き込む。
-
-    \item \textbf{入力データ格納待機（Wait 1）}: Load\_Inputから来た場合は、全てのデータの格納が完了し、Input\_Deserializerから完了通知des\_doneを受信するまで待機する。
-    Move\_Dataから来た場合は、対象となる全データの転送が完了し、完了信号move\_doneを確認するまで待機する。
-
-    \item \textbf{重みデータのロード（Load\_Weights）}: 外部からのstart\_w信号がHighになっている期間、ステートマシーンは毎クロック32bit幅の重みデータをそのままWeight\_RAMに格納する。
-    
-    \item \textbf{重みロード待機（Wait 2）}: start\_wがLowになり、データの転送期間が終了するまで待機する。
-
-    \item \textbf{チャネル演算実行（Compute\_Channel）}: deconv\_layerに対して開始信号startを発行し、1出力チャネル分の積和演算を実行する。
-
-    \item \textbf{演算待機（Wait 3）}: 演算コアからの完了通知doneを受信するまで待機する。
-    
-    \item \textbf{チャネルループ判定（Check\_Loop 1）}: 同一層内の演算継続可否を判定する。
-    \begin{itemize}
-        \item \textbf{チャネル継続}: 未計算のチャネルが残っている場合、start\_w信号に従い、次の重みをロードする。
-        \item \textbf{層完了}: 層内の全チャネル計算が完了している場合、完了信号layer\_doneに従い、次の判定ステートへ移行する。
-    \end{itemize}
-
-    \item \textbf{レイヤーループ判定（Check\_Loop 2）}: 全層の進捗状況に応じた分岐を行う。
-    \begin{itemize}
-        \item \textbf{データ更新（中間層）}: 最終層でない場合、信号start\_moveに従い、Move\_Dataへ遷移する。
-        \item \textbf{全完了（最終層）}: 第4層の演算が完了している場合、完了信号all\_layers\_doneに従い、Serialize\_Outへ遷移する。
-    \end{itemize}
-
-    \item \textbf{データ更新（Move\_Data）}: Accumulator\_RAMにある演算結果を1クロックごとに読み出し、SaturationおよびReRU活性化関数を通してFeature\_RAMへ書き戻す。その後は、次層の重みをロードして演算を行う。
-
-    \item \textbf{最終出力（Serialize\_Out）}: Accumulator\_RAMから演算結果を読み出し、SaturationとTanh\_LUT、Output\_Serializerを通して、出力用レジスタimage\_outに格納される。全画素の格納が完了した時点で、画像データ全体がまとめて外部へ出力される。
-\end{enumerate}
-\end{comment}
 
 \subsection{転置畳み込みユニット（deconv\_layer）の実装}
 
 \begin{figure*}[t]
     \centering
     % BANANA作成図1 (Deconv_layerの中にLoop_counterとKernel_multipleがある図)
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{fig_doi/deconv_layer.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{figure/deconv_layer.png}
     \caption{deconv\_layerの内部構成}
     \label{fig:deconv_struct}
 \end{figure*}
@@ -265,7 +234,7 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 本モジュールは、役割の異なる4つのサブモジュールによって構成されている。
 
 \begin{enumerate}
-    \item \textbf{Controller}: ユニット全体の動作を統括する最上位コントローラ。初期化フェーズでは、次の演算結果が格納されるAccumulator\_RAMの領域を順次走査し、クロック同期で0を書き込む。演算フェーズでは、loop\_counterから供給される座標情報（$ix, iy, kx, ky$）を、読み出しアドレス（x\_addr, w\_addr）へと変換してFeature\_RAMとWeight\_RAMへ出力する。$また、kernel\_multiple演算結果を確定させるタイミングでAccumulator\_RAMへの書き込み許可信号（acc\_we）を発行する重要な役割を担う。$1チャネルの演算が完了した際には、上位へ終了信号doneを発行する。
+    \item \textbf{Controller}: ユニット全体の動作を統括する最上位コントローラ。初期化フェーズでは、次の演算結果が格納されるAccumulator\_RAMの領域を順次走査し、クロック同期で0を書き込む。演算フェーズでは、loop\_counterから供給される座標情報（$ix, iy, kx, ky$）を、読み出しアドレス（x\_addr, w\_addr）へと変換してFeature\_RAMとWeight\_RAMへ出力する。また、kernel\_multiple演算結果を確定させるタイミングでAccumulator\_RAMへの書き込み許可信号（acc\_we）を発行する重要な役割を担う。1チャネルの演算が完了した際には、上位へ終了信号doneを発行する。
     
     \item \textbf{loop\_counter}: 1つの出力チャネルの演算に必要な4重ループ（入力画像の走査およびカーネルの展開）を管理する座標生成カウンタ。Controllerからのカウント許可信号cnt\_enがHighの期間のみカウントを進める設計となっており、特定のタイミングで座標出力を保持することが可能。各ループの最大値は層のパラメータに応じて設定されており、全走査が完了すると完了信号loop\_doneが自動で生成される。
     
@@ -277,23 +246,12 @@ Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:
 \end{enumerate}
 
 \subsubsection{deconv\_layer内におけるデータフロー}
-deconv\_layer内部では、Controllerを中心に各モジュールが双方向に信号をやり取りすることで、一連の演算プロセスを進行させる。
-
-まず、top\_moduleから信号startを受信すると、Controllerが主導してAccumulator\_RAMを初期化し、演算の準備を整える。その後、Controllerがloop\_counterに対してcnt\_enを発行することで、座標生成が開始される。
-
-生成された座標信号は二手に分かれ、一方はControllerで読み出しアドレスに変換され、Feature\_RAMとWeight\_RAMに出力される。もう一方はaddr\_generatorで演算結果の格納先アドレスに変化され、Accumulator\_RAMに出力される。すると、Feature\_RAMとWeight\_RAMからは入力値と重み値、Accumulator\_RAMから蓄積値がkernel\_multipleに読み出される。
-
-供給された入力値・重み値はkernel\_multiple内で乗算され、蓄積値と加算される。その加算結果y\_wdataは、Controllerが制御する書き込み許可信号acc\_weに同期して、再びAccumulator\_RAMの同一アドレスへと書き戻される。この間にloop\_counterでカウントが進むと、Accumulator\_RAMの読み出しと書きこみのアドレスが異なってしまう。そのため、蓄積値の読み出しと演算結果の書き戻しが完了するまで、Controllerでカウントは停止される。
-
-この一連のプロセスが、全座標に対して繰り返し実行されることで、1チャネル分の畳み込み結果がAccumulator\_RAM上に形成されていく。最終的に全ての計算が完了したタイミングで、Controllerは上位のtop\_moduleへ終了信号doneを出力する。
-
-\subsubsection{deconv\_layerの制御ステートマシン}
-deconv\_layerの動作は、Controllerによって厳密に管理されている。そのステートマシンを図\ref{fig:deconv_fsm}に示す。
+deconv\_layer内部では、Controllerを中心に各モジュールが双方向に信号をやり取りすることで、一連の演算プロセスを進行させる。そのステートマシンを図\ref{fig:deconv_fsm}に示す。
 
 \begin{figure}[H]
     \centering
     % BANANA作成図2
-    \includegraphics[width=\linewidth, keepaspectratio]{fig_doi/deconv_layer_FSM.png}
+    \includegraphics[width=\linewidth, keepaspectratio]{figure/deconv_layer_FSM.png}
     \caption{層内制御ステートマシンの状態遷移図}
     \label{fig:deconv_fsm}
 \end{figure}
@@ -302,17 +260,17 @@ deconv\_layerの動作は、Controllerによって厳密に管理されている
 \begin{enumerate}
     \item \textbf{待機（Idle）}: 上位からのstart信号を待機する。
     
-    \item \textbf{初期化（Clear\_RAM）}: 使用するAccumulator\_RAMの領域を0でリセットする。
+    \item \textbf{初期化（Clear\_RAM）}: Controllerが主導してAccumulator\_RAMの領域を初期化し、演算の準備を整える。
     
     \item \textbf{初期化待機（Wait 1）}: メモリのリセットが完了するまで待機する。
     
-    \item \textbf{データ読み出し（Fetch\_Data）}: Controllerがcnt\_enを立ち上げ、loop\_counterが座標信号を生成する。それに基づき各RAMへ読み出しアドレスを提示する。
+    \item \textbf{データ読み出し（Fetch\_Data）}: Controllerがcnt\_enを立ち上げ、loop\_counterが座標信号を生成する。生成された座標信号は二手に分かれ、一方はControllerで読み出しアドレスに変換され、Feature\_RAMとWeight\_RAMに出力される。もう一方はaddr\_generatorで演算結果の格納先アドレスに変化され、Accumulator\_RAMに出力される。
     
-    \item \textbf{読み出し待機（Wait 2）}: RAMからデータが読み出されるまで待機する。ここでcnt\_enは立ち下げ、次のFetch\_Dataまでloop\_counterは停止する。
+    \item \textbf{読み出し待機（Wait 2）}: kernel\_multipleに対して、Feature\_RAMとWeight\_RAMからは入力値と重み値、Accumulator\_RAMから蓄積値が読み出されるまで待機する。ここでcnt\_enは立ち下げ、次のFetch\_Dataまでloop\_counterは停止する。
     
-    \item \textbf{積和演算実行（Compute\_MAC）}: 確定した入力値・重み値・蓄積値をkernel\_multipleへ供給し、1座標分の積和演算を実行する。
+    \item \textbf{積和演算実行（Compute\_MAC）}: 供給された入力値・重み値はkernel\_multiple内で乗算され、蓄積値と加算される。このようにして1座標分の積和演算が実行される。
     
-    \item \textbf{演算完了待機（Wait 3）}: kernel\_multipleがMAC処理を行い、Accumulator\_RAMへ書きこむタイミングで、Controllerがacc\_weをHighにする。
+    \item \textbf{演算完了待機（Wait 3）}: 積和演算が終わると、加算結果y\_wdataは、Controllerが制御する書き込み許可信号acc\_weに同期して、再びAccumulator\_RAMの同一アドレスへと書き戻される。
     
     \item \textbf{ループ判定（Check\_Loop）}: loop\_counterから完了信号loop\_doneを確認する。1チャネル内の全画素の走査が完了していればFinishへ遷移し、未走査要素があればFetch\_Dataへ戻る。
     
@@ -324,7 +282,7 @@ deconv\_layerの動作は、Controllerによって厳密に管理されている
 \begin{figure*}[t]
     \centering
     % BANANA作成図3
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{fig_doi/kernel.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{figure/kernel.png}
     \caption{kernel\_multipleの内部構成}
     \label{fig:kernel_path}
 \end{figure*}
@@ -334,7 +292,7 @@ kernel\_multipleは、deconv\_layerの制御下で動作する演算モジュー
 \subsubsection{各サブモジュールの機能}
 本モジュールは内部に以下の主要なサブモジュールをインスタンス化している。
 \begin{enumerate}
-    \item \textbf{multiple}: 入力値と重み値の乗算を行う。本設計では、メモリ帯域を有効活用するため、1カーネル分に相当する32bit幅（8bit $\times$ 4）の重み値が一括して供給される。そのため、座標信号に基づいたバイト選択ロジックにより、必要な8bitの重み値を抽出した上で16bitへの精度拡張を行い、入力値との乗算を実行する。
+    \item \textbf{multiple}: 入力値と重み値の乗算を行う。本設計では、メモリ帯域を有効活用するため、$4 \times 4$のカーネルのうち$2 \times 2$のカーネル要素（4つ）に相当する32bit幅（8bit $\times$ 4）の重み値が一括して供給される。そのため、座標信号に基づいたバイト選択ロジックにより、必要な8bitの重み値を抽出した上で16bitへの精度拡張を行い、入力値との乗算を実行する。
 
     \item \textbf{adder}: 乗算結果をAccumulator\_RAMの蓄積値に累積する。32bit幅の加算器を実装しており、読み出された蓄積データと現在の乗算結果を合算する際のオーバーフローを防ぎ、演算精度を維持する役割を持つ。
 \end{enumerate}
@@ -342,28 +300,17 @@ kernel\_multipleは、deconv\_layerの制御下で動作する演算モジュー
 \subsubsection{kernel\_multiple内におけるデータフロー}
 kernel\_multiple内部では、上位のControllerによって送られてきた入力値と重み値と蓄積値を用い、1座標ごとに演算を実行する。
 
-まず、供給された座標信号はFix\_Preによって出力座標へと変換され、この値がAccumulator\_RAMの読み出し・書きこみアドレスの特定に使用される。同時に、32bit幅の重み値から、現在の演算座標に対応する特定のバイトデータが抽出され、multipleへと送られる。
-
-演算フェーズでは、
-
 まずmultipleで32bit幅の重み値から、現在の演算座標に対応する特定のバイトデータが抽出される。この重み値と入力値による乗算結果productは、adderにおいて蓄積値と合算される。その合算値y\_wdataは、新たな蓄積データとして即座に元の同一アドレスへと書き戻される。
 
 この動作を繰り返すことで、1出力チャネル分の演算が完結する。
 
 
-%今後やりたいこと
-\begin{comment}
-\subsection{並列演算コア（kernel\_multiple）の設計}
-\verb|kernel_multiple|は、上位層から供給されるデータに対して実際の積和演算を実行する、計算処理の中心的なモジュールである。内部はパイプライン化された複数のMAC（Multiply-Accumulate）ユニットで構成され、高いデータスループットを実現するための最適化が施されている。演算コア内部のデータパスを図\ref{fig:kernel_datapath}に示す。
-\end{comment}
-
-
 \section{FPGA実装の中で工夫した点}
 本章では特にFPGA実装を行うにあたって工夫した点についてまとめる。
 \subsection{Block RAMの制限を考慮した回路構成}
-本システムのアーキテクチャとして、○○節で示した計算手順をとった理由について説明を行う。仮に本システムの計算に用いるパラメータや入力要素をすべてFPGAボードのBlock RAMに保存する形式をとった場合のメモリ使用量の概算は表\ref{tb:memory-max}のようになる。なお、使用したZCU104に搭載されるBlock RAM１つにつき36kBのメモリ量を持つことをもとにして計算を行った。この時、実装に必要なBlock RAMの個数は7,943個となるため表\ref{tb:pl}に示したZCU104に搭載されている312個のBlock RAMでは到底賄うことができないリソース量であることがわかる。そこで私たちのチームでは、PL部に１層の計算の中でも特に１出力要素に必要な重みのみを保存し、これを随時更新することで演算を行うアーキテクチャを設計した。このようなアーキテクチャをとることによって図\ref{fig:cal_tejyun}に示したweight-packed分の重みのみをPL側のRAMに保存すればよいこととなるため、消費するBlock RAMは表\ref{tb:memory-reduce}のようになる。表\ref{tb:memory-reduce}より、Block RAMのリソース消費量は347個にまで削減することが可能である。しかしながら、表\ref{tb:pl}に示したようにZCU104に搭載されたBlock RAMは312個であるため、依然としてPL部に実装できないことが推測された。そこで私たちは次に説明するRAMの再利用を行うことによって更なるメモリ消費量の削減を行った。
+本システムのアーキテクチャとして、9章で示した計算手順をとった理由について詳しい説明を行う。仮に本システムの計算に用いるパラメータや入力要素をすべてFPGAボードのBlock RAMに保存する形式をとった場合のメモリ使用量の概算は表\ref{tb:memory-max}のようになる。なお、使用したZCU104に搭載されるBlock RAM１つにつき36kBのメモリ量を持つことをもとにして計算を行った。この時、実装に必要なBlock RAMの個数は7,943個となるため表\ref{tb:pl}に示したZCU104に搭載されている312個のBlock RAMでは到底賄うことができないリソース量であることがわかる。そこで私たちのチームでは、PL部に１層の計算の中でも特に１出力要素に必要な重みのみを保存し、これを随時更新することで演算を行うアーキテクチャを設計した。このようなアーキテクチャをとることによって図\ref{fig:cal_tejyun}に示したweight-packed分の重みのみをPL側のRAMに保存すればよいこととなるため、消費するBlock RAMは表\ref{tb:memory-reduce}のようになる。表\ref{tb:memory-reduce}より、Block RAMのリソース消費量は347個にまで削減することが可能である。しかしながら、表\ref{tb:pl}に示したようにZCU104に搭載されたBlock RAMは312個であるため、依然としてPL部に実装できないことが推測された。そこで私たちは次に説明するRAMの再利用を行うことによって更なるメモリ消費量の削減を行った。
 
-\begin{table}[]
+\begin{table}[h]
     \caption{メモリの最大使用量}
 	\label{tb:memory-max}
 	\centering
@@ -378,7 +325,7 @@ kernel\_multiple内部では、上位のControllerによって送られてきた
         \end{tabular}
     }
 \end{table}
-\begin{table}[]
+\begin{table}[h]
     \caption{各層の１出力要素当たりのメモリ使用量}
 	\label{tb:memory-reduce}
 	\centering
@@ -394,44 +341,86 @@ kernel\_multiple内部では、上位のControllerによって送られてきた
     }
 \end{table}
 
+\subsection{RAMの再利用によるリソースの最適化}
+限られたBlock RAMリソースでGANを実装するためには、個々のメモリのビット幅およびアドレス幅を、格納するデータ量と必要精度に即して最小限に定義する必要がある。本システムにおける各RAMの仕様について以下のように工夫を加えた。
+\begin{enumerate}
+    \item \textbf{Feature\_RAM / Accumulator\_RAMのビット幅}: 
+    Feature\_RAMのビット幅は、外部から転送されるランダム入力 $z$の精度に適合する16bitを採用した。積和演算の結果を保持するAccumulator\_RAMについては、累積加算過程におけるオーバーフローを防止するため、32bit幅を採用した。
+
+    \item \textbf{アドレス幅（深度）}: 
+    FPGAのBRAMは構成後に深度を動的に変更できないため、Feature\_RAMのおよびAccumulator\_RAMのアドレス幅は、全4層の中で最大となる特徴マップの総要素数（画素数 $\times$ チャネル数）から算出した。本ネットワークで最大のデータ量を持つのは第3層の出力時であり、そのデータサイズは以下の通りとなる。
+    \[ 16\,(\text{px}) \times 16\,(\text{px}) \times 128\,(\text{ch}) = 32,768\,\text{要素} \]
+    この $32,768$ 個の要素を一元的に管理するためには、$2^{15} = 32,768$ であることから、アドレス幅を15bitと定義し、メモリ配置の最適化を図った。 
+    
+    \item \textbf{Weight\_RAMのビット幅}: 
+    重みパラメータは学習済みの8bit精度の値を基本単位としている。本設計ではデータ転送効率向上の観点から、$4 \times 4$のカーネルのうち$2 \times 2$のカーネル要素（4つ）を1つのアドレスに集約して保持する仕様にした。 そこで、4つの重み要素（8bit $\times$ 4）を単一のアドレスに集約した32bit幅を採用した。
+    
+    \item \textbf{Weight\_RAMのアドレス幅}: 
+    本システムでは全パラメータを一括で保持すると膨大なリソースを消費するため、出力を特定のチャネル数ごとに分割して演算を行う。本ネットワークにおいて入力チャネル数が最大となるのは第2層（512 ch）である。そこで、リソース制約と演算速度のバランスを考慮し、出力チャネルの分割単位を16とした。すると、重みメモリのアドレス幅は、入力チャネル数と出力チャネルの分割単位を掛け合わせた以下の式で導出できる。
+    \[ 512\,(\text{入力ch}) \times 16\,(\text{出力ch}) = 8,192\,\text{カーネル} \]
+    この $8,192$ 個の要素を管理するためには $2^{13} = 8,192$ であることから、アドレス幅を 13bitと定義した。
+
+\end{enumerate}
+
+以上の議論から、PLで用いられるBlock RAM数は表\ref{tb:blockram_usage}のように表される。ZCU104に搭載されたBlock RAM数は312であるので、本構成によりハードウェア実装可能である設計に落とし込めているといえる。
+\begin{table}[h]
+    \caption{最終的なBlock RAM使用量の概算}
+	\label{tb:blockram_usage}
+	\centering
+    \resizebox{0.9\linewidth}{!}{
+        \begin{tabular}{l|ll}\hline
+           & サイズ[Kb] & Block RAM  \\\hline
+        Feature\_RAM & 524 & 16  \\
+        Weight\_RAM & 262 & 8 \\
+        Accumlator\_RAM & 1,048 & 32\\\hline
+        総数  & 1,874 & 56   
+        \end{tabular}
+    }
+\end{table}
+
 \section{シミュレーション}
 ハードウェアはVHDLを用いて設計を行い、そのシミュレーションにはXilinx社のVivadoを使用した。本章ではVivadoを用いて作成したシミュレーションをもとにPL部の動作解説を行う。
 \subsection{FIFOの分岐動作}
 入力要素$x$を送信するFIFO-A、重み$w$を送信するFIFO-Cの切り替えについて着目する。本回路では、slv\_reg0の3ビット目に示されるFIFO選択信号により、AXI-LITEを通じたデータ書き込みがどのFIFOに転送されるかを分岐する仕組みとなっている。この仕組みについて、図\ref{fig:fifo_sepa}に示したシミュレーション波形をもとに説明する。図\ref{fig:fifo_sepa}はFIFO-Aに100次元入力を送信した後、FIFO-Cに１つ目の重み$4\times4\times100$要素を送信した波形を表したものである。PS側からFIFO-Aへのデータ転送の様子を見ると、FIFO-A、FIFO-Cのどちらとものデータ書き込み信号dinに値が入力されていることがわかる。しかしながら、書き込み可能信号wr\_enはFIFO-Aのもののみ立っており、この時slv\_reg0は01（00001）から03（00011）に変化している。同様に、FIFO-Cを利用してる区間を確認するとPSからPLにデータ書き込みを行う際のwr\_en信号はFIFO-Cのもののみ立っており、この時のslv\_reg0は05（00101）である。このように、PSからの制御信号によってどのFIFOにデータを書き込むかの分岐が行えていることがわかる。
 
 \subsection{Generatorの動作}
-\subsubsection*{\textbf{１出力要素得る手順}}
+\subsubsection*{\textbf{１出力要素を得る手順}}
 まず、１層目の中でも初めの出力要素を求める際の回路動作について説明を行う。図\ref{fig:1paked_cal}に100次元入力$x$の受信から1層目の1出力要素の取得までのシミュレーション波形を示す。図\ref{fig:1paked_cal}をもとに計算の動作について確認する。まず、本波形で確認する計算過程は次の通りである。
 \begin{enumerate}
-    \item PS側から100次元入力$x$が送られるまで待機。取得後値をRAM-Xに格納
+    \item PS側から100次元入力$x$が送られるまで待機。取得後値をRAM-X（Feature\_RAM）に格納
     \item PS側から１つの出力要素を得るために必要な重み$w$が送られるまで待機
-    \item 取得後値をRAM-Wに格納し、計算開始
+    \item 取得後値をRAM-W（Weight\_RAM）に格納し、計算開始
     \item 計算終了時、計算終了信号を発信し、重み待機状態に遷移
 \end{enumerate}
-まず手順１にて、演算に必要な100次元入力$x$をGeneratorに取り込む。実際に、ram\_x\_dinの動作からRAM-Xに入力データが書き込まれていることが確認できる。この時、動作モードはFIFO-Aを選択したうえで計算開始信号を立てることとなるため、slv\_reg0は01から03に遷移する。続いて手順２において、Generatorへの重み送信が開始するまでGeneratorは待機する。この時、PS側はPLに対して重み$w$を送信し、FIFO-Cはデータを蓄える。この際Generatorは計算を行わないため、計算回路の内部状態を表す信号stは、重み$w$を待つWAIT\_W\_REQとなっている。また、動作モードは計算開始信号が0かつFIFO-Cを選択するため05に遷移する。手順3ではGeneratorが重み$w$を取得する。Generatorは計算に必要な入力$x$と重み$w$がそろい次第計算を開始する。図より、演算結果を保存するRAM-Yに出力１要素分である$4\times4=16$要素以上の書き込みがあるが、これは計算回路の仕様による挙動である。計算回路ではRAM-Xから入力$x$のうち1変数、RAM-Wから得た重み$w$のうちの1変数を掛け合わせこれをRAM-Yに書き込む動作を繰り返す。1出力要素($4\times4$)を得るためには、100次元の入力$x$と100次元の重み$w$の積を足し合わせる必要があるため、計算回路ではRAM-Yへの書き込みを行った後、次の計算結果とRAM-Yの読み出しデータとの和を再び書き込む試行を繰り返す。このことから、シミュレーションのような波形となる。また、信号stは計算終了待機のWAIT\_COREとなる。また、動作モードは計算開始信号が1となるため07に遷移する。最後に、手順４では計算終了時に計算狩猟信号であるl1\_doneを立てていることが確認できる。この信号はAXI-LITE modlueを通じてPS側に送信され、PS側は再び手順1-4を繰り返す。このことから、slv\_reg0は再び05に戻る。このような操作をそれぞれの層の出力要素分行うことによって１層分の計算を完了することができる。
+まず手順１にて、演算に必要な100次元入力$x$をGeneratorに取り込む。実際に、ram\_x\_dinの動作からRAM-X（Feature\_RAM）に入力データが書き込まれていることが確認できる。この時、動作モードはFIFO-Aを選択したうえで計算開始信号を立てることとなるため、slv\_reg0は01から03に遷移する。\\
+続いて手順２において、Generatorへの重み送信が開始するまでGeneratorは待機する。この時、PS側はPLに対して重み$w$を送信し、FIFO-Cはデータを蓄える。この際Generatorは計算を行わないため、計算回路の内部状態を表す信号stは、重み$w$を待つWAIT\_W\_REQとなっている。また、動作モードは計算開始信号が0かつFIFO-Cを選択するため05に遷移する。\\
+手順3ではGeneratorが重み$w$を取得する。Generatorは計算に必要な入力$x$と重み$w$がそろい次第計算を開始する。図より、演算結果を保存するRAM-Y（Accumulator\_RAM）に出力１要素分である$4\times4=16$要素以上の書き込みがあるが、これは計算回路の仕様による挙動である。計算回路ではRAM-X（Feature\_RAM）から入力$x$のうち1変数、RAM-W（Weight\_RAM）から得た重み$w$のうちの1変数を掛け合わせこれをRAM-Y（Accumulator\_RAM）に書き込む動作を繰り返す。1出力要素($4\times4$)を得るためには、100次元の入力$x$と100次元の重み$w$の積を足し合わせる必要があるため、計算回路ではRAM-Y（Accumulator\_RAM）への書き込みを行った後、次の計算結果とRAM-Y（Accumulator\_RAM）の読み出しデータとの和を再び書き込む試行を繰り返す。このことから、シミュレーションのような波形となる。また、信号stは計算終了待機のWAIT\_COREとなる。また、動作モードは計算開始信号が1となるため07に遷移する。\\
+最後に、手順４では計算終了時に計算終了信号であるl1\_doneを立てていることが確認できる。この信号はAXI-LITE modlueを通じてPS側に送信され、PS側は再び手順1-4を繰り返す。このことから、slv\_reg0は再び05に戻る。このような操作をそれぞれの層の出力要素分行うことによって１層分の計算を完了することができる。
 
 
 \subsubsection*{\textbf{１層分の計算を終了した際の手順}}
 図\ref{fig:1layer_move}に1層目の計算から2層目の計算に遷移する際のシミュレーション波形を示す。1層目の計算では、$4\times4$のサイズを持つ512要素の出力を得る。このことから、出力要素を示すcur\_ocは0-511の値を遷移することとなる。実際にシミュレーションは波形を確認するとcur\_ocが511となる区間があり、１層目の計算が終了していることが確認できる。ここで、1層分の計算を終了した際の手順を、１層目から２層目に遷移する際を例に以下で説明する。
 \begin{enumerate}
     \item 1層目の最後である512番目の出力要素を計算し、計算終了時にl1\_doneを立てる
-    \item 内部状態がMOVE\_DATAに遷移し、RAM-Yのデータをrelu関数にとした後、RAM-Xに格納される
-    \item RAM-Xへの格納が終了した際に、end\_moveが立つ。 RAM-Xを入力とした計算を行うために、次の層の計算で用いる重み$w$のロードを開始する
+    \item 内部状態がMOVE\_DATAに遷移し、RAM-Y（Accumulator\_RAM）のデータをReLU関数にとした後、RAM-X（Feature\_RAM）に格納される
+    \item RAM-X（Feature\_RAM）への格納が終了した際に、end\_moveが立つ。 RAM-X（Feature\_RAM）を入力とした計算を行うために、次の層の計算で用いる重み$w$のロードを開始する
 \end{enumerate}
-まず、手順１について「１出力を得る手順」でも説明したように１出力要素を得る計算が終了した際にl1\_done信号が立つ。この時、cur\_ocが計算を行う層を指定するstate\_calによって定まる出力要素と一致しているとき、重み$w$の受付を終了しデータ移行状態のMOVE\_DATAに遷移する。実際にシミュレーション波形より、手順１までの計算は重みを格納したRAM-Wの出力および入力要素のRAM-Xの出力を用いた演算結果を、RAM-Yに書き込むことで完結している。続いて、手順２では入力$x$と重み$w$の積が保存されたRAM-Yの値にReLu関数を適用し、RAM-Xに保存する。実際に、シミュレーション波形では手順２においてram\_x\_dinが受け付けられていることがわかる。手順３では、RAM-Xへのデータ移行が終了した際にend\_move信号をPS側に送信する。PS側がこの信号を受け付けることによりPSは１層目の計算が終了したことを確認する。実際に、計算する層の層数を指定するstate\_calはend\_move信号が立つとともに1に遷移していることがわかる。また、slv\_reg0の値は0d（01101）に遷移していることがわかるため、state\_calも変化していることが裏付けられる。このように、１層分の計算が終了した際には出力結果をReLu関数を用いて整形して2層目の入力として用いるような回路動作が行えていることが確認できる。
+まず、手順１について「１出力を得る手順」でも説明したように１出力要素を得る計算が終了した際にl1\_done信号が立つ。この時、cur\_ocが計算を行う層を指定するstate\_calによって定まる出力要素と一致しているとき、重み$w$の受付を終了しデータ移行状態のMOVE\_DATAに遷移する。実際にシミュレーション波形より、手順１までの計算は重みを格納したRAM-W（Weight\_RAM）の出力および入力要素のRAM-X（Feature\_RAM）の出力を用いた演算結果を、RAM-Y（Accumulator\_RAM）に書き込むことで完結している。\\
+続いて、手順２では入力$x$と重み$w$の積が保存されたRAM-Y（Accumulator\_RAM）の値にReLU関数を適用し、RAM-X（Feature\_RAM）に保存する。実際に、シミュレーション波形では手順２においてram\_x\_dinが受け付けられていることがわかる。\\
+手順３では、RAM-X（Feature\_RAM）へのデータ移行が終了した際にend\_move信号をPS側に送信する。PS側がこの信号を受け付けることによりPSは１層目の計算が終了したことを確認する。実際に、計算する層の層数を指定するstate\_calはend\_move信号が立つとともに1に遷移していることがわかる。また、slv\_reg0の値は0d（01101）に遷移していることがわかるため、state\_calも変化していることが裏付けられる。このように、１層分の計算が終了した際には出力結果をReLU関数を用いて整形して2層目の入力として用いるような回路動作が行えていることが確認できる。
 
 
 \subsubsection*{\textbf{計算終了時の手順}}
 図\ref{fig:finished_cal}に計算終了時のGeneratorにおけるシミュレーション波形を示す。このシミュレーション波形は、３層目の計算が終了した後４層目の計算を行い、計算終了信号を送るまでを表した図である。実際に、計算される層を表すstate\_cal信号は2から3に遷移しており、４層目の計算を行っていることが確認できる。
 計算終了までの手順を３層目から４層目の計算を行う部分を例に説明すると以下の通りとなる。
 \begin{enumerate}
-    \item １層分の計算を終了した際の手順で示したように３層目の計算を終了し、RAM-Xに入力データを書き込む
+    \item １層分の計算を終了した際の手順で示したように３層目の計算を終了し、RAM-X（Feature\_RAM）に入力データを書き込む
     \item 4層目の計算に必要な重みを受け取ったのち、計算を開始する
-    \item ４層目の計算終了した後、RAM-Yに格納された$32\times32$要素にTanhを適用し、１つの信号として繋げたものをend\_allと共に出力として送る
+    \item ４層目の計算終了した後、RAM-Y（Accumulator\_RAM）に格納された$32\times32$要素にTanhを適用し、１つの信号として繋げたものをend\_allと共に出力として送る
 \end{enumerate}
 まず、手順１についてシミュレーション波形からもend\_moveが立っていることから正常動作していることが確認できる。続いて手順２について、今までと同様に重みの送信と計算開始信号start\_wを送ることで計算開始していることがわかる。
-また、slv\_reg0は1d（11101）で重みのデータ送信、1f（11111）で計算開始となっていることも確認できる。最後に手順３にて、RAM-Yに格納した値にTanhとデータを連結する処理を加えた値をout\_imgとして出力する。
-実際に、図\ref{fig:finished_cal}の拡大波形より、l4\_doneから計算終了信号end\_allが立つまでの間に出力信号out\_imgの更新が行われており、この間にRAM-Yの値に対するTanhの適用とデータ連結を行っていることがわかる。このことから、
+また、slv\_reg0は1d（11101）で重みのデータ送信、1f（11111）で計算開始となっていることも確認できる。最後に手順３にて、RAM-Y（Accumulator\_RAM）に格納した値にTanhとデータを連結する処理を加えた値をout\_imgとして出力する。
+実際に、図\ref{fig:finished_cal}の拡大波形より、l4\_doneから計算終了信号end\_allが立つまでの間に出力信号out\_imgの更新が行われており、この間にRAM-Y（Accumulator\_RAM）の値に対するTanhの適用とデータ連結を行っていることがわかる。このことから、
 Generatorから出力される値は$32\times32\times8$bitであり、この信号が1clkで出力されることがわかる。
 
 \begin{figure*}[h]
@@ -459,6 +448,8 @@ Generatorから出力される値は$32\times32\times8$bitであり、この信�
 	\label{fig:finished_cal}
 \end{figure*}
 
+\clearpage
+
 
 \section{実機動作}
 本章では、実際にシステムをFPGAボードで実機実装した際の結果をまとめる。
@@ -471,7 +462,7 @@ Generatorから出力される値は$32\times32\times8$bitであり、この信�
 現時点で実装を終えた回路では、１から４層目までのそれぞれの回路で１つの乗算器を利用している。このことから、使用リソースのうち
 DSP sliceは4つ利用していることがわかる。また、BRAMの使用量は「FPGA実装の中で工夫した点」で示したものとおおむね予測通りになっていることも確認できる。少し少なくなっている点に関しては、論理合成を行った際に１つのBRAMに
 tanhやFIFOといった容量の少ないRAMやROMを合わせて格納することでリソース消費量を削減していると考えられる。
-\begin{table}[]
+\begin{table}[h]
     \caption{使用リソースと最大動作周波数}
 	\label{tb:resource-usage}
 	\centering
@@ -492,7 +483,7 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 
 \subsection{CPUとの性能比較}
 今回実装したシステムと同様のモデルを表\ref{tb:emu_siyou}に示す環境で動作させた際の性能比較を行う。
-\begin{table}[]
+\begin{table}[h]
     \caption{エミュレータPCの仕様}
 	\label{tb:emu_siyou}
 	\centering
@@ -505,7 +496,7 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 \end{table}
 
 100次元入力を入力し、1つのグレースケール画像を得るまでにかかった計算時間はCPUとFPGAとでそれぞれ表\ref{tb:cal_time}のように計測された。表\ref{tb:cal_time}より、FPGAの計算時間はCPUのものに比べて2.28倍の高速化を達成していることが確認できる。
-\begin{table}[]
+\begin{table}[h]
     \caption{CPUとFPGAの計算時間比較}
 	\label{tb:cal_time}
 	\centering
@@ -527,19 +518,23 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 \section{今後の展望}
 本研究で開発したシステムは、回路リソースの消費を抑えつつ、GANによる画像生成の基本動作をFPGA上で実現することに主眼を置いた。しかし、実用的なアバター生成を想定したリアルタイム処理を実現するためには、ソフトウェア、ハードウェア共にさらなる最適化が不可欠である。本章では、設計されたシステムについて現在実装中である要素について説明する。
 
+\subsection{学習法改善による高解像度化}
+今後の展望として、ソフトウェア上での学習手法を工夫することにより、より高画質な画像生成が実現できると考えられる。現状のFPGA実装では、リソース制約の観点から、出力可能な画像サイズには制限がある。しかしながら、本研究で用いた固定ベクトルによる新たな画像空間生成を、RGB成分ではなく分割画像に対して適用することで、この制約を回避できる可能性がある。
+具体的には、64×64画像を4分割して学習を行い、FPGA上では32×32画像を4枚出力する構成とすることで、実質的に高解像度画像の生成が可能になると考えられる。本手法に関する具体的な検証実験については、補足資料1に示す。
+
 \subsection{演算処理の並列化}
 図\ref{fig:botole_cal}は本システムのうち、３層目の計算の126番目の計算におけるシミュレーション波形を抜き出したものである。その中でも白枠で示した部分が重みのLOADにかかる区間、赤枠で示した部分が入力と重みを用いて１出力チャネルを得る計算部分となっている。図\ref{fig:botole_cal}からわかるように実際に計算を行う部分が実行時間の中でも多くの割合を占めていることから、現在のアーキテクチャは演算ボトルネックであるといえる。そこで、演算処理の並列化を行うことを目指す。
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=1.0\linewidth]{fig_doi/botole_cal.png}
+    \includegraphics[width=1.0\linewidth]{figure/botole_cal.png}
     \caption{演算時間のボトルネック特定}
     \label{fig:botole_cal}
 \end{figure}
 \begin{figure*}[t]
     \centering
     % RGB分割の概念図を想定
-    \includegraphics[width=\textwidth, keepaspectratio]{fig_doi/parallel_concept.png}
+    \includegraphics[width=\textwidth, keepaspectratio]{figure/parallel_concept.png}
     \caption{ビット帯域の分割による並列化の概念図}
     \label{fig:bit_division}
 \end{figure*}
@@ -556,7 +551,7 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 \begin{figure*}[t]
     \centering
     % 並列化された演算コアの図を想定
-    \includegraphics[width=\textwidth, keepaspectratio]{fig_doi/kernel_4.png}
+    \includegraphics[width=\textwidth, keepaspectratio]{figure/kernel_4.png}
     \caption{4並列化した演算コア構成}
     \label{fig:parallel_arch}
 \end{figure*}
@@ -585,7 +580,7 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 \begin{figure*}[t]
     \centering
     % 並列化された演算コアの図を想定
-    \includegraphics[width=\textwidth, keepaspectratio]{fig_doi/kernel_12.png}
+    \includegraphics[width=\textwidth, keepaspectratio]{figure/kernel_12.png}
     \caption{12並列化した演算コア構成}
     \label{fig:parallel_arch12}
 \end{figure*}
@@ -598,7 +593,7 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 \begin{figure*}[t]
     \centering
     % 並列化された演算コアの図を想定
-    \includegraphics[width=\textwidth, keepaspectratio]{fig_doi/parallel_top.png}
+    \includegraphics[width=\textwidth, keepaspectratio]{figure/parallel_top.png}
     \caption{拡張された計算回路の構造}
     \label{fig:parallel_top}
 \end{figure*}
@@ -617,7 +612,7 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 
 本システムの実現可能性もハードウェアリソースの観点から確認する。kernel\_multiple1回路の並列化数が12倍となることから、利用するDSP sliceも同様に12倍となる。このことから、表\ref{tb:resource-usage}より、48個のDSP sliceを消費する。
 また、Feature\_RAMおよびWeight\_RAMはカラー並列化により３倍のメモリ容量を占有する。このことから、予想されるメモリ使用量は表\ref{tb:memory-max}と同様に考えると表\ref{tb:tenboujitugenkanousei}のようになる。ZCU104に搭載されたblock RAM総数は364であることからUtilizationは約47\%となり、さらにFIFO等の通信で利用されるメモリをさらに増やしたとしても十分実現可能であるといえる。
-\begin{table}[]
+\begin{table}[h]
     \caption{演算、カラー並列化時のBlock RAM使用量}
 	\label{tb:tenboujitugenkanousei}
 	\centering
@@ -632,20 +627,14 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
     }
 \end{table}
 
-\subsection{システムの応用用途}
+%\subsection{システムの応用用途}
 
 
 \section{まとめ}
-
+今回、アバター画像からGAMを用いて新たなアバターを生成するシステムの実装を行った。学習モデル作成に当たってはFPGA実装を踏まえ、１つのネットワークでRGB空間を表現できる学習モデルを構築した。回路設計を行うに当たっては、大規模なCNNモデルをFPGAの限られたリソース量で再現するために、PS,PL協同動作するシステムを設計するとともに、今後の拡張性を高めた設計に力を入れた。これらの設計が功を奏した結果、FPGAボードにシステムを実装することができ、CPUと比べての高速化や同様の出力結果を得ることができた。また、11章に示したような今後の展望についても深く考察し、実現可能性を考えることができた。一方で、今後の展望で示した部分は未だに設計段階であり実装途中のものとなる。これからは特に今後の展望に示した実装に力を入れ、より実運用に近いシステムへと昇華させることに取り組みたい。
 
 \section{最後に}
-今年の設計課題はGenerative Adversarial Networks（GAN）であり、昨年度と比べて○○
-でした。そのテーマにおいて、社会的インパクトやオリジナリティ、実現可能性の観点を考慮した結果今回のドット絵のアバター作成をテーマとして選択いたしました。私たちのチームは全員ともハードウェア設計初心者で
-あったことから、テーマ策定の段階において実現可能性を考えることがとても難しかったです。このような状況の中でも、歴代の先輩方の実装された回路をもとにパラメータや回路リソースの目安を図りながらも、私たち独自のシステムを
-構築することを心掛けました。特に私たちの実装した「複数層で成り立つCNNモデル」は今まででも初の試みであり、どのようなアーキテクチャで実現するかはメンバー全員での度重なる議論と情報収集により成しえることができました。
-また、メンバーそれぞれが技術的強みを発揮し、ディープラーニングの観点からも、回路構成の観点からも面白いものを作成するよう努力いたしました。\\
-この大会を通じて、深層学習やハードウェア設計に関する知見を深めることができたのはもちろんのこと、チームで１つのものを「モノ」を作り上げる難しさと楽しさを実感しました。メンバーそれぞれが「ユニークなシステムを作成する」という目標に向かい
-開発を行いましたが、やはり途中工程では認識のずれが生じるような場面もありました。このようなずれや様々な課題を乗り越え、本文で示しました実機実装まで行うことができた際は大きな達成感を得ることができました。
-このように、チームメンバーそれぞれの「ユニークさ」の主体性がアバター画像です。チームで取り組み１つの成果物を作り上げたこの経験を今後にも大いに生かしていきたいと思います。\\
+今年の設計課題はGenerative Adversarial Networks（GAN）であり、新規画像を作成できるという強みに着目しました。この着眼点において、社会的インパクトやオリジナリティ、実現可能性の観点を考慮した結果今回のドット絵のアバター作成をテーマとして選択いたしました。私たちのチームは全員ともハードウェア設計初心者であったことから、テーマ策定の段階において実現可能性を考えることがとても難しかったです。このような状況の中でも、歴代の先輩方の実装された回路をもとにパラメータや回路リソースの目安を図りながらも、私たち独自のシステムを構築することを心掛けました。特に私たちの実装した「複数層で成り立つCNNモデル」は今まででも初の試みであり、どのようなアーキテクチャで実現するかはメンバー全員での度重なる議論と情報収集により成しえることができました。また、メンバーそれぞれが技術的強みを発揮し、ディープラーニングの観点からも、回路構成の観点からも面白いものを作成するよう努力いたしました。\\
+この大会を通じて、深層学習やハードウェア設計に関する知見を深めることができたのはもちろんのこと、チームで１つのものを「モノ」を作り上げる難しさと楽しさを実感しました。メンバーそれぞれが「ユニークなシステムを作成する」という目標に向かい開発を行いましたが、やはり途中工程では認識のずれが生じるような場面もありました。このようなずれや様々な課題を乗り越え、本文で示しました実機実装まで行うことができた際は大きな達成感を得ることができました。このように、チームメンバーそれぞれの「ユニークさ」の主体性がアバター画像です。チームで取り組み１つの成果物を作り上げたこの経験を今後にも大いに生かしていきたいと思います。\\
 また、今後の展望にも示しましたように構想したすべての回路構成を実装することはいまだ完遂できておりませんので、引き続き実装を続けつつ、チームで納得のいく成果物を作り上げたいと思います。
 このような貴重な機会を与えてくださったLSI Design Contest 2026実行委員会の皆様、関係者の方々にチーム一同より心から感謝申し上げます。
