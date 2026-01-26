@@ -118,7 +118,7 @@ KLダイバージェンスは非対称性を持ち、$D_{KL}(P||Q)\neq D_{KL}(Q|
 {\small
 \begin{align}
     &V(G)=\int p_{\text{data}}(x)\log{\dfrac{p_{\text{data}}}{p_{\text{data}}+p_g}}dx\notag\\
-    &　　+\int p_g(x)\log\left(1-\dfrac{p_{\text{data}}}{p_{\text{data}}+p_g}dx\right)\notag\\
+    &　　+\int p_g(x)\log\left(1-\dfrac{p_{\text{data}}}{p_{\text{data}}+p_g}\right)dx\notag\\
     &=D_{KL}(p_{\text{data}}||(p_{\text{data}}+p_g))+\notag\\
     &　　D_{KL}(p_{\text{data}}||(p_{\text{data}}+p_g))-\log4\notag\\
     &=2D_{JS}(p_{\text{data}}||p_g)-\log4 \label{eq:VG}
@@ -132,7 +132,7 @@ KLダイバージェンスは非対称性を持ち、$D_{KL}(P||Q)\neq D_{KL}(Q|
 \newpage
 \subsubsection{GANの学習の流れ}
 \eref{eq:minimax}をもとに、DiscriminatorおよびGeneratorの損失関数を$L_D、L_G$とすると、\eref{eq:LD}、\eref{eq:LG}のようになる。
-\small{
+{\small
 \begin{align}
     L_D&=\frac{1}{m}\sum_{i=1}^{m}\Bigl[\log D(x)+\log(1-D(G(z)))\Bigr]\label{eq:LD}\\
     L_G&=\frac{1}{m}\sum_{i=1}^{m}\log (1-D(G(z)))\label{eq:LG}
@@ -187,26 +187,27 @@ GANにおける学習アルゴリズムをAlgorithm\ref{alg:gan_train}に示す�
 \begin{algorithm}
 \caption{Training of GAN}
 \label{alg:gan_train}
-\small
-\begin{algorithmic}[1]
-\State \textbf{Input:} correct Image $p_{\mathrm{data}}(x)$, noise prior $z \sim \mathcal{N}(0, I)$, minibatch size $m$
-\State \textbf{Input:}learning rates $\eta_D,\eta_G$
-\State Initialize parameters $\theta_d, \theta_g$
-\For{iteration $=1,2,\ldots$}
+{\small
+    \begin{algorithmic}[1]
+    \State \textbf{Input:} correct Image $p_{\mathrm{data}}(x)$, noise prior $z \sim \mathcal{N}(0, I)$, minibatch size $m$
+    \State \textbf{Input:}learning rates $\eta_D,\eta_G$
+    \State Initialize parameters $\theta_d, \theta_g$
+    \For{iteration $=1,2,\ldots$}
+        
+        \State Sample minibatch $\{x^{(i)}\}_{i=1}^{m} \sim p_{\mathrm{data}}(x)$
+        \State Sample minibatch $\{z^{(i)}\}_{i=1}^{m} \sim p_z(z)$
+        \State $\tilde{x}^{(i)} \gets G(z^{(i)};\theta_g)$
+        \State $g_d \gets \nabla_{\theta_d}\frac{1}{m}\sum_{i=1}^{m}\Bigl[\log D(x^{(i)};\theta_d)+\log(1-D(\tilde{x}^{(i)};\theta_d))\Bigr]$
+        \State $\theta_d \gets \theta_d + \eta_D\, g_d$
     
-    \State Sample minibatch $\{x^{(i)}\}_{i=1}^{m} \sim p_{\mathrm{data}}(x)$
-    \State Sample minibatch $\{z^{(i)}\}_{i=1}^{m} \sim p_z(z)$
-    \State $\tilde{x}^{(i)} \gets G(z^{(i)};\theta_g)$
-    \State $g_d \gets \nabla_{\theta_d}\frac{1}{m}\sum_{i=1}^{m}\Bigl[\log D(x^{(i)};\theta_d)+\log(1-D(\tilde{x}^{(i)};\theta_d))\Bigr]$
-    \State $\theta_d \gets \theta_d + \eta_D\, g_d$
-   
 
-    \State Sample minibatch $\{z^{(i)}\}_{i=1}^{m} \sim p_z(z)$
-    \State $\tilde{x}^{(i)} \gets G(z^{(i)};\theta_g)$
-    \State $g_g \gets \nabla_{\theta_g}\frac{1}{m}\sum_{i=1}^{m}(1-\log D(\tilde{x}^{(i)};\theta_d))$ 
-    \State $\theta_g \gets \theta_g - \eta_G\, g_g$
-\EndFor
-\end{algorithmic}
+        \State Sample minibatch $\{z^{(i)}\}_{i=1}^{m} \sim p_z(z)$
+        \State $\tilde{x}^{(i)} \gets G(z^{(i)};\theta_g)$
+        \State $g_g \gets \nabla_{\theta_g}\frac{1}{m}\sum_{i=1}^{m}(1-\log D(\tilde{x}^{(i)};\theta_d))$ 
+        \State $\theta_g \gets \theta_g - \eta_G\, g_g$
+    \EndFor
+    \end{algorithmic}
+}
 \end{algorithm}
 
 
