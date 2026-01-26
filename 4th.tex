@@ -1,7 +1,8 @@
+\newpage
 \section{本システムの構成}
-入力は100次元のランダムノイズ$z$で32×32の画像を出力するようなGeneratorを学習する。ここで、値が固定の100次元のランダムノイズ$v1$、$v2$を用いることで、$z$はR画像の学習、$z+v_1$はG画像の学習、$z+v_2$はB画像の学習を行う。
+100次元のランダムノイズ$z$を入力とし、$32\times 32$の画像を出力するGeneratorを学習する。ここで、値が固定の100次元のランダムノイズ$v1$、$v2$を用いることで、$z$はR画像、$z+v_1$はG画像、$z+v_2$はB画像の学習を行う。
 
-Discriminatorでは、32×32の画像を見てそれが偽物（Gが生成）か本物（正解画像）かの確率を0～1で出力する（本物:1、偽物:0）。本システムでは、カラー画像の精度向上のため、2種類のDiscriminatorを用意した。1つ目のDiscrininatorでは、Generatorの出力するグレースケール画像（R,G,B）に対し、グレースケールの正解画像と比較を行うことでアバターの形としての正しさを評価する。2つ目のDiscriminatorでは、$z、z+v1、z+v2$の入力で得たR画像、G画像、B画像を用いて作成した偽物のカラー画像と正解カラー画像との比較で正誤の確率を出力する。このように、Discriminatorの役割をアバターの形と色に分担を行うことで精度の向上を図った。
+Discriminatorでは、32×32の画像を見てそれが偽物（Gが生成）か本物（正解画像）かの確率を0～1で出力する（本物:1、偽物:0）。本システムでは、カラー画像の判別精度向上のため、2種類のDiscriminatorを用意した。1つ目のDiscrininatorでは、Generatorの出力するグレースケール画像（R,G,B）に対し、グレースケールの正解画像と比較を行うことでアバターの形としての正しさを評価する。2つ目のDiscriminatorでは、$z、z+v1、z+v2$の入力で得たR画像、G画像、B画像を用いて作成した偽物のカラー画像と正解カラー画像との比較で正誤の確率を出力する。このように、Discriminatorの役割をアバターの形と色に分担を行うことで精度の向上を図った。
 
 
 \subsection{FPGA実装時のイメージ}
@@ -14,7 +15,7 @@ FPGA 実装では Generator ネットワークのみを実装し，100 次元の
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=70mm,keepaspectratio]{figure/RGB_train.png}
+	\includegraphics[width=60mm,keepaspectratio]{figure/RGB_train.png}
 	\caption{固定ベクトルを用いたRGB学習}
 	\label{fg:RGB_train}
 \end{figure}
@@ -24,7 +25,7 @@ FPGA 実装では Generator ネットワークのみを実装し，100 次元の
 R 用・G 用・B 用に別々のネットワークを学習する場合、FPGAへパラメータを都度転送する必要がある。一方、本方式では入力をz、z+v1、z+v2のように工夫することで一つのネットワークでカラー画像を出力できることが強みである。
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=70mm,keepaspectratio]{figure/RGB_FPGA.png}
+	\includegraphics[width=60mm,keepaspectratio]{figure/RGB_FPGA.png}
 	\caption{FPGA実装時のカラー化演算イメージ}
 	\label{fg:RGB_FPGA}
 \end{figure}
@@ -36,11 +37,10 @@ R 用・G 用・B 用に別々のネットワークを学習する場合、FPGA�
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=37mm,keepaspectratio]{figure/grid_3x3.png}
+	\includegraphics[width=35mm,keepaspectratio]{figure/grid_3x3.png}
 	\caption{入力データの一部}
 	\label{fig:grid_3x3}
 \end{figure}
-
 
 
 \subsection{ネットワーク構成}
@@ -86,7 +86,7 @@ Generatorの構成は、DCGAN\cite{radford_unsupervised_2016}のネットワー�
 \end{figure}
 
 \subsubsection{Discriminator(grey)}
-Discriminator(grey)は，$32 \times 32$（1ch）のグレースケール画像を入力とし、畳み込み層により空間解像度を段階的に縮小しながら特徴量を抽出する。最終的に、全結合層の出力をsigmoid関数に通すことで0～1 のスコア（本物らしさ）を出力する。本ネットワークの構成を\fref{fg:Dis_g} に示す。ここで、Generatorとは異なりLeaky ReLU関数およびBatch正規化を用いているが、これは DCGAN における学習安定性および性能向上を目的としたものであり、参考文献 \cite{article} に基づいている。
+Discriminator(grey)は，$32 \times 32$（1ch）のグレースケール画像を入力とし、畳み込み層により空間解像度を段階的に縮小しながら特徴量を抽出する。最終的に、全結合層の出力をsigmoid関数に通すことで0～1 のスコア（本物らしさ）を出力する。本ネットワークの構成を\fref{fg:Dis_g} に示す。ここで、Generatorとは異なりLeaky ReLU関数およびBatch正規化を用いているが、これは DCGAN における学習安定性および性能向上を目的としたものであり、参考文献\cite{liu_application_2022}に基づいている。
 
 \begin{figure}[H]
 	\centering
@@ -146,16 +146,16 @@ Adam $\beta_2$ & 0.999 \\
 % t &\in \left\{ \frac{1}{4}, \frac{2}{4}, \frac{3}{4} \right\}.
 % \end{align}
 \begin{align}
-z(t_k) &= (1-t_k)\,z_1 + t_k\,z_2, \\
+z(t_k) &= (1-t_k)\cdot z_1 + t_k\cdot z_2, \\
 t_k &= \frac{k}{N+1}, \quad k = 1,2,\dots,N.
 \end{align}
-
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=60mm,keepaspectratio]{figure/interp1.png}
 	\caption{3種のランダム入力セットに対する補間結果}
 	\label{fg:hokan}
 \end{figure}
+
 \fref{fg:hokan}の結果から、GANでは入力$z$に対して正解画像を学習しているのではなく、$z$という連続空間に対してアバターらしい画像を学習していることが分かる。また、隣接する画像を比較すると形状が似ているものが多く、画像を確率分布として学習していることが分かる。
 
 % 教師あり学習のようにピクセル一致で学習した場合、任意の2入力に対する補間点における出力は、あくまで二つの画像の和を取り2で割ったような画像になるが、GANのように画像を確率分布として学習することで、任意の2入力の間の補間点における画像も意味を持った新しい画像として生成できるため、データセット拡張において優位性があるといえる。

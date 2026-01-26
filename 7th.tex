@@ -1,9 +1,297 @@
-\section{補足資料}
-\subsection{固定ベクトル$v1、v2$の頑健性について}
-高次元のzは球殻上
+\clearpage
+\section*{固定ベクトルに対する追加考察・検証}
+\setcounter{section}{0}
+\section{固定ベクトル$v1、v2$の頑健性について}
+〇章において、固定ベクトル$v1、v2$を用いて、$z$の分布から少しずれた領域を生成することで、R、G、Bに対する空間を学習させた。しかし、それぞれの領域の重なりが大きい場合、学習時に領域が混ざってしまい学習が上手くいかない場合が想定される。（\fref{fg:hosoku1}）
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/hosoku1.png}
+	\caption{$v_1,v_2$による画像空間が混ざる例}
+	\label{fg:hosoku1}
+\end{figure}
+
+本章では、高次元空間においてランダムサンプリング点が球殻上に分布する性質に着目し、固定ベクトルを用いることで各分布の重なりが生じにくい状況であることを示す。
+
+% \subsection*{準備：凸結合、凸包について}
+% 点$z_1,z_2,\cdots,z_m$を重み付き平均したものを凸結合といい、\eref{eq:totuketu}に示す。凸結合でできる点は、元の点群の外にでない性質を持つ。
+% \begin{align}
+% 	x=\Sigma_{i=1}^m \lambda_iz_i (\lambda_i\geq0, \Sigma_{i=1}^m\lambda_i=1) \label{eq:totuketu}
+% \end{align}	
+
+% そして、集合$T$の点を材料として作れる凸結合を集めた集合を凸包といい、$conv(T)$で表す。凸包内の凸結合は決定論的に\eref{eq:totuketu}と書くこともできるが、$\lambda$を確率、$z_i$を確率変数の値とみると、$x$は期待値と見ることができる。
+
+% \subsection{Approximate Caratheodory theorem}
+% Approximate Caratheodory theorem\cite{vershynin_introduction_nodate}を\eref{eq:ACT}に示す。\eref{eq:ACT}は、凸包の中の任意の点は、集合Tから選んだ$k$個の点の単純平均をとると、$1/\sqrt{k}$の精度で近似できることを表す。
+% \begin{align}
+% 	\left\| x - \frac{1}{k} \sum_{j=1}^{k} x_j \right\|_2 \leq \frac{1}{\sqrt{k}} \label{eq:ACT}
+% \end{align}	
+\subsection*{準備：分散の定義}
+確率変数$X$、平均$\mu$、とすると分散$Var$は「平均値からの偏差の2乗の平均」で定義できるから、\eref{eq:7-0}となる。$\mu=E[X]$を用いると、最終的に\eref{eq:7-01}が得られる。
+\begin{align}
+	Var(X)&=E\left[(X-\mu)^2 \right]\label{eq:7-0}\\
+		  &=E\left[(X^2-2X\mu+\mu^2) \right]\notag\\
+		  &=E[X^2]-2\mu E[X]+\mu^2\notag\\
+		  &=E[X^2]-(E[X])^2\label{eq:7-01}
+\end{align}
+
+\subsection{高次元空間におけるガウス分布}
+本節は、参考文献 \cite{vershynin_introduction_nodate} の第 3.1 章の内容を基にまとめた。独立で平均0、分散1をもつガウス分布からサンプリングした100次元のベクトルを\eref{eq:7-1}に示す。
+\begin{align}
+	z=(z_1,z_2,\cdots,z_{100}),  z_i\sim\mathcal{N}(0,1) \label{eq:7-1}
+\end{align}
+$z$のノルム二乗の期待値は、\eref{eq:7-2}となる。
+\begin{align}
+   E\|z\|_2^2=E\Sigma_{i=1}^n{z_i^2}=\Sigma_{i=1}^nE[{z_i^2}]\label{eq:7-2}
+\end{align}
+\eref{eq:7-2}に\eref{eq:7-01}を適用すると、\eref{eq:7-3}となる。
+\begin{align}
+  \Sigma_{i=1}^nE[{z_i^2}]&=\Sigma_{i=1}^n\left[Var({z_i^2})+(E[{z_i^2}])\right]\notag \\
+  &=\Sigma_{i=1}^n(1+0)=n\label{eq:7-3}
+\end{align}
+
+よって、$z$のノルム二乗の期待値$E\|z\|_2^2=n$となる。ここで、$S_n=\|z\|_2^2$とおくと、その分散は\eref{eq:7-4}となる。
+
+\begin{align}
+	{Var}(S_n)= \sum_{i=1}^{n} {Var}(X_i^2)= \sum_{i=1}^{n} O(1)= O(n)\label{eq:7-4}
+\end{align}
+
+したがって、$\sqrt{{Var}(S_n)}=O(\sqrt{n})$が言えるから、\eref{eq:7-5}となる。
+\begin{align}
+	S_n &= n \pm O(\sqrt{n})\label{eq:7-5}\\
+	\|z\|_2 &= \sqrt{n \pm O(\sqrt{n})} \label{eq:7-6}
+\end{align}	
+
+ここで、誤差項$h$を含む形で$f(a+h)$を二次までテイラー展開すると\eref{eq:7-7}となる。
+\begin{align}
+	f(a+h) = f(a) +f'(a)h + O(^2) \label{eq:7-7}
+\end{align}
+
+$h=\pm O(\sqrt{n})$とおき、$f(x)=\sqrt{x}$に対して\eref{eq:7-7}のテイラー展開を用いると、\eref{eq:7-8}となる。
+\begin{align}
+	f(x+h) = f(x) +\frac{1}{2\sqrt{x}}h + O(h^2) \label{eq:7-8}
+\end{align}
+
+ここで、$x=n$とすると、第二項は分子が$h=\pm O(\sqrt{n})$で、分母が$2\sqrt{n}$より、$\pm O(1)$である。また、第三項$O(h^2)→0$と無視できる。以上のことから、\eref{eq:7-6}は\eref{eq:7-9}となる。
+ \begin{align}
+	\|z\|_2 &= \sqrt{n +h} = \sqrt{n}\pm O(1)\label{eq:7-9}
+\end{align}
+
+したがって、高次元正規ベクトル$z$の長さ$\|z\|_2$は$\sqrt{n}$付近に集中することが分かる。
 
 
-\subsection{ニューラルネットワーク}
+\subsection{計算機実験}
+
+\subsubsection{高次元空間における球殻集中現象の検証}
+本節では，100 次元のランダムベクトルが半径 $\sqrt{100}=10$ 付近の球殻上に集中する性質を確認する。
+
+Python を用いて，20000 個の 100 次元ベクトル $z \sim \mathcal{N}(0,I)$ を生成し，それらのノルムに関する統計量を \tref{tab:z_radius} に示す。ノルムの平均値は 9.97 となり，理論値 $\sqrt{100}=10$ に近い値をとることが確認できた。また，$8 < \lVert z \rVert_2 < 12$ を満たす割合は 0.995 であり，全体の 99\% 以上のベクトルがこの範囲に含まれていることが分かる。
+\begin{table}[htbp]
+\centering
+\caption{潜在変数 $z \sim \mathcal{N}(0, I)$ のノルム分布}
+\label{tab:z_radius}
+\begin{tabular}{l c}
+\hline
+指標 & 値 \\
+\hline
+ノルム平均 $[\|z\|_2]$ & 9.97 \\
+標準偏差 $\mathrm{Std}[\|z\|]$ & 0.71 \\
+$8<\|z\|_2<12$ に含まれる割合 & 0.995 \\
+$9<\|z\|_2<11$ に含まれる割合 & 0.844 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsubsection*{$z$の空間と固定ベクトル空間$z+v1、z+v2$の分離可能性の検証}
+次に，潜在変数 $z$ に加算する固定ベクトル $v_1, v_2$ を生成し，それらの統計量を \tref{tab:v_stats} に示す。$v_1,v_2$はサンプリング数が1であるため、ノルム平均は10から1程度離れていることが分かる。
+
+\begin{table}[htbp]
+\centering
+\caption{固定ベクトル $v_1, v_2$ の統計量}
+\label{tab:v_stats}
+\begin{tabular}{l c c c}
+\hline
+ベクトル & ノルム平均 & 標準偏差 & $\lVert v \rVert_2$ \\
+\hline
+$v_1$ & 0.048 & 0.918 & 9.15 \\
+$v_2$ & -0.003 & 0.911 & 9.07 \\
+\hline
+\end{tabular}
+\end{table}
+
+次に、$z+v_1$および$z+v_2$としたときの統計量を\tref{tab:z1_radius}、\tref{tab:z2_radius}に示す。\tref{tab:z1_radius}、\tref{tab:z2_radius}から、$z$の99\%が含まれる$8<r<12$の領域において、$z+v1$は3.5\%、$z+v1$は4.0\%しか含まれないことが分かり、$z$空間と$z+v1、z+v2$空間が十分に分離できていることが分かる。そのイメージ図を\fref{fg:zv1v2}に示す。
+
+\begin{table}[htbp]
+\centering
+\caption{固定ベクトル $v_1$ を加えた潜在変数 $z+v_1$ のノルム分布}
+\label{tab:z1_radius}
+\begin{tabular}{l c}
+\hline
+指標 & 値 \\
+\hline
+ノルム平均 $\mathbb{E}[\|z+v_1\|_2]$ & 13.52 \\
+標準偏差 $\mathrm{Std}[\|z+v_1\|_2]$ & 0.85 \\
+$8<\|z+v_1\|_2<12$ に含まれる割合 & 0.035 \\
+$9<\|z+v_1\|_2<11$ に含まれる割合 & 0.00105 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{固定ベクトル $v_2$ を加えた潜在変数 $z+v_2$ のノルム分布}
+\label{tab:z2_radius}
+\begin{tabular}{l c}
+\hline
+指標 & 値 \\
+\hline
+ノルム平均 $\mathbb{E}[\|z+v_2\|_2]$ & 13.47 \\
+標準偏差 $\mathrm{Std}[\|z+v_2\|_2]$ & 0.85 \\
+$8<\|z+v_2\|_2<12$ に含まれる割合 & 0.040 \\
+$9<\|z+v_2\|_2<11$ に含まれる割合 & 0.00150 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/zv1v2.png}
+	\caption{z,z+v1,z+v2の分離イメージ図}
+	\label{fg:zv1v2}
+\end{figure}
+
+\subsubsection{固定ベクトル空間$z+v_1$と$z+v_2$の分離可能性の検証}
+次に、固定ベクトル空間$z_1=z+v_1$と$z_2=z+v_2$が分離できているかの確認を起こなう。まず、$z_1=z+v1$の作る球殻は中心が$v_1$、半径が$r=\|z\|$である。よって、$z_1,z_2$に対して$v_1$だけ平行移動すると、$z_1'$は中心0に移動する（\fref{fg:v1v2}）。したがって、この状況では、$z_2'=z_2-v_1$が$r\pm2$および、$r\pm1$の範囲にどのくらい含まれるかを評価すればよい。その結果を\tref{tab:z2_in_shell_v1}に示す。\tref{tab:z2_in_shell_v1}から、$z_2'$は$r\pm2$および、$r\pm1$の範囲に一つも含まれないことが分かり、固定ベクトル空間$z+v_1$と$z+v_2$は分離できていることが分かる。
+
+
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/v1v2.png}
+	\caption{$z_1,z_2$を$-v_1$平行移動したイメージ図}
+	\label{fg:v1v2}
+\end{figure}
+
+
+\begin{table}[htbp]
+\centering
+\caption{$z+v_1$ が作る球殻（中心 $v_1$）に対する $z+v_2$ の含有率}
+\label{tab:z2_in_shell_v1}
+\begin{tabular}{l c}
+\hline
+指標 & 値 \\
+\hline
+中心 $c$ & $v_1$ \\
+半径 $\|z\|$ & 9.97 \\
+$\|z+v_2-c\|_2 \in [r\pm2]$ の割合 & 0.000 \\
+$\|z+v_2-c\|_2 \in [r\pm1]$ の割合 & 0.000 \\
+%中心間距離 $\|v_2-v_1\|_2$ & 12.34 \\
+\hline
+\end{tabular}
+\end{table}
+
+\newpage
+\section{固定ベクトルを用いた、高解像度出力のFPGA応用}
+前章では、高次元のランダム空間$z$に対して、固定ベクトル$v_1、v_2$を用いて新しい空間$z+v1$、$z+v2$を定義できることを確かめた。そこで、この固定ベクトルをR,G,B空間ではなく、分割画像に対して適応することでFPGAにおいても高解像度の画像出力が実現できることを示す。
+
+\subsection{現状のFPGAの課題とその解決策}
+現状のFPGAの課題は、NNまたはCNN実装時にそのパラメータの多さからリソースに制限がかかり、32×32出力程度の画像しか出力できないことである。しかし、64×64の正解画像に対して、象限ごとの分割を行い、第1象限の画像空間を $z$，第2象限の画像空間を $z+v_1$，第3象限の画像空間を$z+v_2$，第4象限を $z+v_3$に対応付けて学習を行うことで、FPGAの出力としては32×32画像であるが、$z\sim z+v_3$までの出力画像を並べることで64×64の画像を生成することが可能となる。4分割して学習を行うことから、このGANをQuatro GANと名付け、そのシステムのイメージ図を\fref{fg:qgan}に示す。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/qgan.png}
+	\caption{Quatro GANのイメージ図}
+	\label{fg:qgan}
+\end{figure}
+
+\subsection{Quatro GANの学習環境}
+Quatro GANの実現可能性を検証するため、簡易的な実験を行った。Generator のニューラルネットワークには MLP を用い、その構成を \tref{tab:mlp_100_256_32_1024} に示す。正解画像としては、\fref{fg:QGAN_correct} に示す 64×64 ピクセルのアバター画像 911 枚を使用した。
+
+
+\begin{table}[htbp]
+\centering
+\caption{MLP の層構成（100$\rightarrow$256$\rightarrow$32$\rightarrow$1024）}
+\label{tab:mlp_100_256_32_1024}
+\begin{tabular}{c c c}
+\hline
+層 & 入力 $\rightarrow$ 出力 & 活性化 \\
+\hline
+FC1 & 100 $\rightarrow$ 256  & ReLU \\
+FC2 & 256 $\rightarrow$ 32   & ReLU \\
+FC3 & 32  $\rightarrow$ 1024 & Sigmoid \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/output_selected_4images.png}
+	\caption{正解画像のデータセット(4枚抜粋)}
+	\label{fg:QGAN_correct}
+\end{figure}
+
+
+
+
+\subsection{実験結果}
+学習結果を\fref{fg:QGAN1}に示す。\fref{fg:QGAN1}において、左がランダムな4入力($z^1～z^4$)に対する、$z、z+v1、z+v2、z+v3$の出力結果、右が任意のランダム入力に対する$z、z+v1、z+v2、z+v3$の出力を並べて表示したものである。この結果から、固定ベクトル$v_1\sim v_3$を用いることで、各象限ごとの画像を学習できていることが分かる。
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/QGAN_1.png}
+	\caption{実験結果}
+	\label{fg:QGAN1}
+\end{figure}
+
+
+さらに、GANとして連続空間に対する学習ができているかの評価を行う。ランダムな二つのベクトル$z_1、z_2$に対する出力結果を\fref{fg:QGAN2}に示す。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/QGAN2.png}
+	\caption{ランダムな二つのベクトル$z_1、z_2$に対する出力結果}
+	\label{fg:QGAN2}
+\end{figure}
+
+この二つのベクトルの間の3点を補完して生成したベクトルに対する出力結果を\fref{fg:QGAN3}に示す。\fref{fg:QGAN3}から、連続空間に対しても学習できており、GANとしての学習も機能していることが分かる。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/QGAN3.png}
+	\caption{補間点に対する出力結果}
+	\label{fg:QGAN3}
+\end{figure}
+
+
+
+\subsection{固定ベクトルとFPGA応用のまとめ}
+以上の結果より、固定ベクトルを用いることで、単一のネットワークにおいて複数の画像空間を学習可能であることが確認された。本研究では、R・G・B 空間に対応する 3 種類の画像空間および 4 分割画像としての 4 種類の画像空間を、一つのネットワークで表現した。固定ベクトル数を増やすことで、より高解像度な画像出力や、多様な画像表現を可能とするネットワーク構造の実現も期待される。
+
+単一のネットワークから複数の独立した意味を持つ情報を出力できる点は、FPGA 実装において大きな利点であり、回路規模や資源使用量の削減につながる。その結果として、より高機能な FPGA 搭載システムの構築に貢献できると考えられる。
+
+
+
+
+
+\clearpage
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section*{補足資料}
+\setcounter{section}{0}
+
+\section{ニューラルネットワーク}
 
 % アーティフィシャルニューラルネットワーク (Artificial Neural Network; ANN)は人間の脳構造を模した数理モデルである。以後，簡単のためANNをニューラルネットワーク(NN)として記述する。
 ニューラルネットワークは複数の層から構成され，それぞれの層にはニューロンと呼ばれる計算ユニットが存在する。各ニューロンは他のニューロンと結合されており，その結合には重みが付けられている。この重みがニューラルネットワークの学習の鍵となり，入力データに対する適切な出力を生成するために最適化される。層の構造は入力層，中間層（隠れ層），および出力層に分かれており，隠れ層の数が大きいほどより複雑なデータのパターンを学習する。ニューラルネットワークの構造を\fref{fig:nn}に示す。
@@ -121,7 +409,3 @@ $L$層のニューラルネットワークにおける出力層の重みの更�
 	\label{fig:neuron2}
 \end{figure}
 
-\subsection{CNN}
-
-
-\subsection{逆畳み込み演算}

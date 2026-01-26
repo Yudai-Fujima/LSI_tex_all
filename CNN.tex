@@ -1,0 +1,131 @@
+\newpage
+\section{CNN}
+本章では，GeneratorおよびDiscriminatorのネットワークとして使用したCNN(Convolutional Neural Network)について説明する．基礎となるニューラルネットワーク，誤差逆伝播法については〇章の補足資料に記述した．
+
+\subsection{CNNの概要}
+CNNは画像認識のタスクにおいて優れた性能を示すことから注目される深層学習アルゴリズムである．CNNの概要図を\fref{fg:CNN1}に示す．画像には隣接するピクセル間に関係性があるため，CNNでは，「畳み込み層」「プーリング層」を用いて画像の局所的な特徴量（エッジや色の変化）を抽出する．分類問題では，最後に全結合層を用いることでスコアを算出する．
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/CNN1.png}
+	\caption{CNNの概要図}
+	\label{fg:CNN1}
+\end{figure}
+
+\subsection*{畳み込み層}
+畳み込み層では、カーネルと呼ばれる小さなフィルタを入力データに対して畳み込むことで、局所的な特徴を抽出する。\fref{fg:CNN2}に示すように、複数種類のカーネルを入力データに適用することで、エッジや模様などの多様な画像特徴を捉えることができる。strideを1とした場合、カーネルは入力上を1マスずつスライドしながら、各位置において要素積の計算を行う。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/CNN2.png}
+	\caption{畳み込み演算}
+	\label{fg:CNN2}
+\end{figure}
+
+\subsection*{プーリング層}
+プーリング層では，畳み込み層によって得られた特徴マップを空間的に縮小する処理を行う。代表的な手法としてマックスプーリングがあり，局所領域内の最大値を出力として採用する。(\fref{fg:CNN3})
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/CNN3.png}
+	\caption{マックスプーリング}
+	\label{fg:CNN3}
+\end{figure}
+
+\subsection{逆畳み込み演算}
+CNNでは、情報を抽出するため畳み込み層を通過するごとに画像サイズは小さくなる。その一方で、逆畳み込み演算を用いることにより、画像を拡大していくことが可能となる。今回、Generatorは100次元の潜在変数ベクトルに対し、逆畳み込みを行うことで32×32の画像を生成する。逆畳み込みは以下の4つのステップに基づく。
+\begin{enumerate}
+    \item strideに応じたデータ拡張
+    \item ゼロパディング
+    \item paddingに応じた、余白の削除
+    \item 畳み込み演算
+\end{enumerate}
+
+\subsubsection*{STEP1：strideに応じたデータ拡張}
+\fref{fg:CNN4}に示すように、strideで指定した行数分だけ入力データのピクセル間に0を追加する。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/CNN4.png}
+	\caption{strideに応じたデータ拡張}
+	\label{fg:CNN4}
+\end{figure}
+
+\subsubsection*{STEP2：ゼロパディング}
+STEP2では、カーネルのサイズよりも1行少ない数だけ、余白の追加を行う。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/CNN5.png}
+	\caption{ゼロパディング}
+	\label{fg:CNN5}
+\end{figure}
+
+\subsubsection*{STEP3：paddingに応じた、余白の削除}
+paddingで指定した行数分の余白を削除する。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=40mm,keepaspectratio]{figure/CNN6.png}
+	\caption{paddingに応じた、余白の削除}
+	\label{fg:CNN6}
+\end{figure}
+\subsubsection*{STEP4：畳み込み演算}
+\fref{fg:CNN2}と同様の、通常の畳み込み演算を行う。
+
+\subsection{本システムの逆畳み込み回路}
+本システムの逆畳み込み回路は、\fref{fg:CNN7}のような構成をしており、4×4のサイズのカーネルに対して、各パラメータに基づいた演算を行うことにより、1×1→4×4→8×8→16×16→32×32とスケールアップしていく。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/CNN7.png}
+	\caption{逆畳み込み回路の入出力関係}
+	\label{fg:CNN7}
+\end{figure}
+
+\subsubsection*{一つのカーネルと特徴マップの逆畳み込み計算}
+例として、Deconv2における4×4→8×8の計算を\fref{fg:CNN8}に示す。カーネルサイズは4×4である。まず、stride=2より\fref{fg:CNN4}のデータ拡張を行うことで7×7になる。次に、STEP2の余白の追加は「カーネル数$-1=3$」の0が追加される。STEP3ではpadding=1より、1行分の0が削除され、11×11となる。STEP4で通常の畳み込み演算を行うことにより、8×8の特徴マップが生成できる。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/CNN8.png}
+	\caption{Deconv2における4×4→8×8の計算例}
+	\label{fg:CNN8}
+\end{figure}
+
+\subsubsection*{一層ごとの逆畳み込み演算}
+本節では、一層ごとの逆畳み込み層ではどのような演算が行われているかを説明する。本システムにおける各層ごとの入出力およびカーネル行列の関係を\fref{fg:CNN9}に示す。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/CNN9.png}
+	\caption{各層ごとの入出力およびカーネル行列の関係}
+	\label{fg:CNN9}
+\end{figure}
+
+\fref{fg:CNN9}の計算関係から分かるように、各層では入力input$[1][i]$とカーネルkernel$[i][k]$の行列積を計算することで、出力output$[k]$を得ている。$j$番目の出力を得るには、$j$列のカーネルkernel$[i][j]$と入力input$[1][i]$の行列積をとる。つまり、出力の一要素を計算したい場合は、カーネルは該当する一列分の要素のみが必要となる。具体的な計算を次節で説明する。
+
+\subsubsection*{Deconv1の逆畳み込み演算例}
+本節では、Deconv1の逆畳み込み演算を例として、各層の演算の流れを示す。Deconv1では、100次元の入力input$[1][i](i=1,2,\cdots,100)$に対して、512次元のoutput$[k] (k=1,2,\cdots,512)$を出力する。各outputに対する計算は列ごとに行うため、1列目の計算を例にする。その概要図を\fref{fg:CNN10}に示す。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/CNN10.png}
+	\caption{Deconv1の1列目の計算例}
+	\label{fg:CNN10}
+\end{figure}
+
+\fref{fg:CNN10}のように、一列目の計算は\eref{eq:1retu}となる。
+\begin{align}
+	\Sigma_{i=1}^{100} \text{input1}[1][i]\cdot\text{kernel1}[i][1]=\text{output1}[1] \label{eq:1retu}
+\end{align}
+
+これで1列分の計算が完了するため、同様の計算を残りの511列に対して行う(\fref{fg:CNN11})。つまり、Deconv1層における畳み込み演算は\eref{eq:zenretu}となる。
+\begin{align}
+	&\Sigma_{k=1}^{512}\left[ \Sigma_{i=1}^{100} \text{input1}[1][i]\cdot\text{kernel1}[i][k]\right] \notag\\
+	&=\text{output1}[k]\label{eq:zenretu}
+\end{align}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/CNN11.png}
+	\caption{Deconv1の全列の計算例}
+	\label{fg:CNN11}
+\end{figure}

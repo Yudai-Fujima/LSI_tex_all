@@ -1,3 +1,4 @@
+\newpage
 \section{準備}
 本章では、3.1において生成モデルにおけるGANの位置づけを示し、3.2においてGANの学習アルゴリズムについて説明する。
 
@@ -10,33 +11,61 @@
 
 
 \subsubsection{VAE}
-画像データ$x$の特徴を潜在変数として次元の圧縮を行い、その潜在変数に基づいて画像を生成する仕組みをオートエンコーダ―(AE)という。AEでは潜在変数と出力画像は一対一対応だが、潜在変数を確率分布とすることで未知データの出力を可能とした技術としてVAE(Variational Auto Encoder)がある。
+画像データ$x$の特徴を潜在変数として次元の圧縮を行い、その潜在変数に基づいて画像を生成する仕組みをオートエンコーダ―(AE)という。AEでは潜在変数と出力画像は一対一対応だが、潜在変数を確率分布とすることで未知データの出力を可能とした技術としてVAE(Variational Auto Encoder)\cite{kingma_auto-encoding_2022}がある。(\fref{fg:VAE})
 
 % VAEの目標はモデルから画像$x$が生成される確率$p_\theta(x)=\int p_\theta(z)p_\theta(x|z)dz$を求めることであるが、この$p_\theta(x)$を直接的に計算することは難しい。そこで、VAEでは潜在変数$z$を介して、推論モデル$q(z|x)$、生成モデル$p(x|z)$を用いる。
 
 % VAEの推論モデル$q(z|x)$では、入力データの平均$\mu$と分散$\sigma^2$を求め、潜在空間$N(\mu,\sigma^2)$の推定をおこなう。生成モデル$p(x|z)$では、潜在変数$z$を潜在空間$N(\mu,\sigma^2)$からランダムにサンプリングすることで、新しい画像を生成することが可能となる。
 VAEでは$p_\theta(x)$を直接的に計算することは難しいという問題に対して、潜在変数$z$を介して、推論モデル$q_\phi(z|x)$および生成モデル$p_\theta(x|z)$を導入することで対処している。
 
-VAEの推論モデル$q_\phi(z|x)$は、入力データ$x$に対して潜在変数の分布を近似する
-ものであり、ニューラルネットワークを用いて平均$\mu$と分散$\sigma^2$を出力することで，$z$が従うガウス分布$\mathcal{N}(\mu,\sigma^2)$を定義する。生成モデル$p_\theta(x|z)$では、潜在変数$z$を事前分布$p(z)$からサンプリングし、それに基づいて新しい画像を生成することが可能となる。
+VAEの推論モデル$q_\phi(z|x)$は、入力データ$x$に対して潜在変数の分布を近似するものであり、ニューラルネットワークを用いて平均$\mu$と分散$\sigma^2$を出力することで，$z$が従うガウス分布$\mathcal{N}(\mu,\sigma^2)$を定義する。生成モデル$p_\theta(x|z)$では、潜在変数$z$を事前分布$p(z)$からサンプリングし、それに基づいて新しい画像を生成することが可能となる。
 
 VAEでは$p(x|z)$をガウス分布としてモデル化するため、再構成誤差は二乗誤差に一致する。しかしながら、二乗誤差は多峰的な分布に対して平均化を促す性質がある。その結果、高周波成分を正確に再現する鋭い画像よりも、平滑化された曖昧な画像の方が誤差が小さくなりやすく、VAEでは生成画像がぼやけやすいというアルゴリズム上の課題が存在する。
 
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/VAE.png}
+	\caption{VAEの概要図}
+	\label{fg:VAE}
+\end{figure}
+
 \subsubsection{GAN}
-VAEと異なり，GANは明示的な尤度関数$p_\theta(x)$や潜在変数の事後分布$q(z|x)$を定義せず、識別モデルを介して生成分布とデータ分布との差異を評価することで、分布全体を暗黙的に近似する生成モデルである。
+VAEと異なり，GAN\cite{goodfellow_generative_2014}は明示的な尤度関数$p_\theta(x)$や潜在変数の事後分布$q(z|x)$を定義せず、識別モデルを介して生成分布とデータ分布との差異を評価することで、分布全体を暗黙的に近似する生成モデルである。(\fref{fg:GAN_VAE})
 
 具体的には、Generatorとよばれる生成モデル$G(z)$とDiscriminatorと呼ばれる識別モデル$D(x)$を用いて、これらを敵対的に学習させることで画像のデータ分布を学習する。
 
 生成モデル$G(z)$は潜在変数$z$を画像空間に写像するパラメータを学習し、識別モデル$D(x)$は入力画像$x$が正解データか$G(z)$かを判別する関数として機能する。VAEとは異なり、$p_{\text{data}}、p_{\theta}$のJSダイバージェンスを最小化するように学習が進むため、高周波成分も再現したシャープな画像が生成されやすい。
 
 
-\clearpage
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=60mm,keepaspectratio]{figure/GAN_VAE.png}
+	\caption{GANの概要図(VAE比較)}
+	\label{fg:GAN_VAE}
+\end{figure}
+
+
+
+
+
+
+
+\newpage
+
 \subsection{GAN (Generative Adversarial Networks)の学習アルゴリズム}
 
 GANの目標は画像データ$x$に対する生成モデルの分布$p_g$を学習することである。そのために、まずノイズ変数$z$に対する事前分布$p_z(z)$を定義し、これをデータ空間へ移す写像として$G(z;\theta_g)$を学習する。$\theta_g$はNNのパラメータである。これにより、単純な事前分布$z\sim p_z(z)$を関数$G(z)$に入力することで、新たなデータ分布$x=p_g$を生成できる。
 
 次に、単一のスカラー値を出力するパーセプトロン$D(x;\theta_d)$を定義する。$D(x)$は、入力$x$が生成分布$p_g$からではなく、実データ分布から得られたものである確率を表す。
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=65mm,keepaspectratio]{figure/GAN.png}
+	\caption{GANの概要図}
+	\label{fg:GAN}
+\end{figure}
 
 GANでは、\eref{eq:minimax}に示すminimax問題を解くことにより、$G(z)$はデータ分布を学習し、$D$は正解画像のデータ分布と$p_g$の判別方法を学習する。
 \begin{align}
@@ -47,6 +76,8 @@ GANでは、\eref{eq:minimax}に示すminimax問題を解くことにより、$G
 ここで、先に$D$の最適化を完全に進めてしまうと、$D(G(z))\approx 0$となってしまい、$G$の損失関数$L_G=\mathbb{E}_{z\sim p_z(z)}\left[\log(1 - D(G(z)))\right]$の勾配は$\partial \mathcal{L}_G / \partial \theta_g \approx 0$となる。その結果、$G$の有効な更新ができず、生成器$G$が$p_z(z)$から$p_g$へと変換する過程を学習できなくなってしまう。そのため、$D$と$G$を交互に更新することにより、$D$の過度な最適化を避け、$G$の学習を有効に進めることができる。
 
 3.2.1、3.2.2にてDiscriminatorおよびGeneratorの最適解について、3.2.3にてGAN全体の学習の流れについて詳細を説明する。
+
+
 
 \subsubsection{Discrminator最適解}
 期待値$E$は確率変数$x$に対して関数$f(x)$の平均をとることで求まるから、離散の確率密度関数$P(x)$に対して$E[f(x)]=\Sigma f(x)P(x)$、連続の確率密度関数$p(x)$場合は$E[f(x)]=\int f(x)p(x)dx$と記述できる。
@@ -98,7 +129,7 @@ KLダイバージェンスは非対称性を持ち、$D_{KL}(P||Q)\neq D_{KL}(Q|
 % 以上の内容から、GANの理想的最適点では生成分布$p_g$と実データ$p_{\text{data}}$が一致し、その結果、識別器はすべての入力に対して$1/2$を出力する。
 
 以上の内容から、識別器を最適解$D^*_G(x)=1/2$の近傍で保った状態で、生成器に対してJSダイバージェンスの最小化を目指すことで、唯一の最適解$p_g=p_{\text{data}}$に収束することが分かる。
-
+\newpage
 \subsubsection{GANの学習の流れ}
 \eref{eq:minimax}をもとに、DiscriminatorおよびGeneratorの損失関数を$L_D、L_G$とすると、\eref{eq:LD}、\eref{eq:LG}のようになる。
 \small{
@@ -110,11 +141,20 @@ KLダイバージェンスは非対称性を持ち、$D_{KL}(P||Q)\neq D_{KL}(Q|
 \subsubsection*{BCELoss(Binary Cross Entropy Loss)}
 交差エントロピー損失(BCELoss)は\eref{eq:BCE}で定義される。
 \begin{align}
-    BCE(x,y) = -(y\log x + (1-y)log(1-x)) \label{eq:BCE}
+    BCE(x,y) = -(y\log x + (1-y)\log(1-x)) \label{eq:BCE}
 \end{align}
 
 \subsubsection*{Discriminatorの学習}
-Discriminatorの目標は$p_{\mathrm{data}}$と$p_g$を判別することであるから、学習時のラベルとしてFake=0,True=1とした場合、$D(G(z))=0,D(x)=1$となる。
+Discriminatorの学習時の概要図を\fref{fg:D_train}に示す。Discriminator学習時はGeneratorのパラメータ$\theta_g$は固定する。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=65mm,keepaspectratio]{figure/D_train.png}
+	\caption{Discrminatorの学習時の概要図}
+	\label{fg:D_train}
+\end{figure}
+
+Discriminatorの目標は$p_{\mathrm{data}}$と$p_g$を判別することであるから、学習時のラベルとしてFake=0, True=1とした場合、$D(G(z))=0,D(x)=1$となる。
 
 \eref{eq:BCE}を参考にすると、\eref{eq:LD}の損失は次式で表せる。
 \begin{align}
@@ -123,12 +163,24 @@ Discriminatorの目標は$p_{\mathrm{data}}$と$p_g$を判別することであ�
     &L_D=|BCE(D(x),1)+BCE(D(G(z)),0)|
 \end{align}
 
+
 \subsubsection*{Generatorの学習}
+Generatorの学習時の概要図を\fref{fg:D_train}に示す。Generator学習時はDiscriminatorのパラメータ$\theta_d$は固定する。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=65mm,keepaspectratio]{figure/G_train.png}
+	\caption{Generatorの学習時の概要図}
+	\label{fg:G_train}
+\end{figure}
+
 Generatorの目標は$p_{\mathrm{data}}=p_g$として、Discriminatorをだます分布を生成することであるから$D(G(z))=1$を目指す。\eref{eq:BCE}を参考にすると、\eref{eq:LG}の損失は次式で表せる。
 \begin{align}
     &BCE(G(z),1)=-\log(D(x))\notag\\
     &L_G = |BCE(G(z),1)|
 \end{align}    
+
+
 
 \subsubsection*{学習アルゴリズム}
 GANにおける学習アルゴリズムをAlgorithm\ref{alg:gan_train}に示す。

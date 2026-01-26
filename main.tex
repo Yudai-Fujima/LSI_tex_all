@@ -7,7 +7,8 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage[dvips]{graphicx}
-\pagestyle{empty}
+%\pagestyle{empty}
+\pagestyle{plain}
 \usepackage{tabularx}
 \usepackage{here}
 \usepackage{subfigure}
@@ -20,6 +21,9 @@
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{graphicx} % preamble
 
 
 %\multirow{行数}{*}{内容}
@@ -34,8 +38,8 @@
 
 \setlength{\textwidth}{\paperwidth}     % 紙面横幅を本文領域にする（RIGHT=-LEFT）
 \setlength{\oddsidemargin}{-8.4truemm}  % 1ページ目の左の余白を17mm(=1inch-8.4mm)に
-\setlength{\evensidemargin}{-1.0truemm} % 2ページ目の左の余白を24mm(=1inch-1.4mm)(適当)
-\addtolength{\textwidth}{-41truemm}     % 右の余白は24mm（17mm+24mm）
+\setlength{\evensidemargin}{-8.4truemm} % 2ページ目の左の余白を24mm(=1inch-1.4mm)(適当)%%% -1.0
+\addtolength{\textwidth}{-34truemm}     % 右の余白は24mm（17mm+24mm）%%-41
 %\setlength{\columnsep}{2.5zw}		%左右のカラムの間隔
 %\setlength{\footskip}{0mm}
 
@@ -108,7 +112,7 @@
 {\bf GANを用いた新たなアバター生成}
 \begin{center}
 \normalsize
-藤間裕大　小野佳祐　土井遼太郎　美谷佳寛\\
+藤間裕大　小野佳祐　土居遼太郎　美谷佳寛\\
 千葉大学院　融合理工学府　基幹工学専攻　修士1年
 \end{center}
 \vspace{-1mm}
@@ -121,10 +125,13 @@
 {\baselineskip 1.8zh
 \input{1st}
 \input{2nd}
+\input{2_add}
 \input{3rd}
 \input{4th}
+\input{CNN}
+\input{emulator}
 \input{5th}
-\input{6th}
+%\input{6th}
 \input{7th}
 }
 
@@ -132,7 +139,10 @@
 % \begin{thebibliography}{10}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\scriptsize
 
+\bibliographystyle{junsrt}
+\bibliography{bibtex.bib}
 
 
 
