@@ -1,76 +1,12 @@
 \newpage
-\section{CNN}
-本章では、GeneratorおよびDiscriminatorのネットワークとして使用したCNN(Convolutional Neural Network)について説明する。基礎となるニューラルネットワーク、誤差逆伝播法については補足資料2に記述した。
 
-\subsection{CNNの概要}
-CNNは画像認識のタスクにおいて優れた性能を示すことから注目される深層学習アルゴリズムである。CNNの概要図を\fref{fg:CNN1}に示す。画像には隣接するピクセル間に関係性があるため、CNNでは、「畳み込み層」「プーリング層」を用いて画像の局所的な特徴量（エッジや色の変化）を抽出する。分類問題では、最後に全結合層を用いることでスコアを算出する。
+\section{エミュレータ設計}
+前章までの学習では、PyTorch などの既存ライブラリを用いており、逆畳み込み演算には \texttt{nn.ConvTranspose2d} を使用していた。そのため、具体的な逆畳み込みの計算は関数で処理されている上、計算はすべて浮動小数点演算により行われている。
+
+本章では、FPGA実装にあたり、逆畳み込み演算の具体的な計算構成を整理するとともに、固定小数点表現の検討を行う。
 
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=60mm,keepaspectratio]{figure/CNN1.png}
-	\caption{CNNの概要図}
-	\label{fg:CNN1}
-\end{figure}
-
-\subsection*{畳み込み層}
-畳み込み層では、カーネルと呼ばれる小さなフィルタを入力データに対して畳み込むことで、局所的な特徴を抽出する。\fref{fg:CNN2}に示すように、複数種類のカーネルを入力データに適用することで、エッジや模様などの多様な画像特徴を捉えることができる。strideを1とした場合、カーネルは入力上を1マスずつスライドしながら、各位置において要素積の計算を行う。
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN2.png}
-	\caption{畳み込み演算}
-	\label{fg:CNN2}
-\end{figure}
-
-\subsection*{プーリング層}
-プーリング層では、畳み込み層によって得られた特徴マップを空間的に縮小する処理を行う。代表的な手法としてマックスプーリングがあり、局所領域内の最大値を出力として採用する。(\fref{fg:CNN3})
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN3.png}
-	\caption{マックスプーリング}
-	\label{fg:CNN3}
-\end{figure}
-
-\subsection{逆畳み込み演算}
-CNNでは、情報を抽出するため畳み込み層を通過するごとに画像サイズは小さくなる。その一方で、逆畳み込み演算を用いることにより、画像を拡大していくことが可能となる。今回、Generatorは100次元の潜在変数ベクトルに対し、逆畳み込みを行うことで32×32の画像を生成する。逆畳み込みは以下の4つのステップに基づく。
-\begin{enumerate}
-    \item strideに応じたデータ拡張
-    \item ゼロパディング
-    \item paddingに応じた、余白の削除
-    \item 畳み込み演算
-\end{enumerate}
-
-\subsubsection*{STEP1：strideに応じたデータ拡張}
-\fref{fg:CNN4}に示すように、strideで指定した行数分だけ入力データのピクセル間に0を追加する。
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN4.png}
-	\caption{strideに応じたデータ拡張}
-	\label{fg:CNN4}
-\end{figure}
-
-\subsubsection*{STEP2：ゼロパディング}
-STEP2では、カーネルのサイズよりも1行少ない数だけ、余白の追加を行う。
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN5.png}
-	\caption{ゼロパディング}
-	\label{fg:CNN5}
-\end{figure}
-
-\subsubsection*{STEP3：paddingに応じた、余白の削除}
-paddingで指定した行数分の余白を削除する。
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN6.png}
-	\caption{paddingに応じた、余白の削除}
-	\label{fg:CNN6}
-\end{figure}
-\subsubsection*{STEP4：畳み込み演算}
-\fref{fg:CNN2}と同様の、通常の畳み込み演算を行う。
-
-\subsection{本システムの逆畳み込み回路}
+\subsection{Generatorの逆畳み込み回路}
 本システムの逆畳み込み回路は、\fref{fg:CNN7}のような構成をしており、4×4のサイズのカーネルに対して、各パラメータに基づいた演算を行うことにより、1×1→4×4→8×8→16×16→32×32とスケールアップしていく。
 
 \begin{figure}[htbp]
