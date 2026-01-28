@@ -211,10 +211,10 @@ GANにおける学習アルゴリズムをAlgorithm\ref{alg:gan_train}に示す�
 \end{algorithm}
 
 
-\section{CNN}
+\subsection{CNN}
 本章では、GeneratorおよびDiscriminatorのネットワークとして使用したCNN(Convolutional Neural Network)について説明する。基礎となるニューラルネットワーク、誤差逆伝播法については補足資料2に記述した。
 
-\subsection{CNNの概要}
+\subsubsection{CNNの概要}
 CNNは画像認識のタスクにおいて優れた性能を示すことから注目される深層学習アルゴリズムである。CNNの概要図を\fref{fg:CNN1}に示す。画像には隣接するピクセル間に関係性があるため、CNNでは、「畳み込み層」「プーリング層」を用いて画像の局所的な特徴量（エッジや色の変化）を抽出する。分類問題では、最後に全結合層を用いることでスコアを算出する。
 
 
