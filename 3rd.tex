@@ -11,7 +11,8 @@
 
 
 \subsubsection{VAE}
-画像データ$x$の特徴を潜在変数として次元の圧縮を行い、その潜在変数に基づいて画像を生成する仕組みをオートエンコーダ―(AE)という。AEでは潜在変数と出力画像は一対一対応だが、潜在変数を確率分布とすることで未知データの出力を可能とした技術としてVAE(Variational Auto Encoder)\cite{kingma_auto-encoding_2022}がある。(\fref{fg:VAE})
+% 画像データ$x$の特徴を潜在変数として次元の圧縮を行い、その潜在変数に基づいて画像を生成する仕組みをオートエンコーダ―(AE)という。
+画像データ$x$を低次元の潜在表現に写像し、その潜在表現から元の画像を再構成する仕組みをオートエンコーダ(AE)という。AEでは潜在変数と出力画像は一対一対応だが、潜在変数を確率分布とすることで未知データの出力を可能とした技術としてVAE(Variational Auto Encoder)\cite{kingma_auto-encoding_2022}がある。(\fref{fg:VAE})
 
 % VAEの目標はモデルから画像$x$が生成される確率$p_\theta(x)=\int p_\theta(z)p_\theta(x|z)dz$を求めることであるが、この$p_\theta(x)$を直接的に計算することは難しい。そこで、VAEでは潜在変数$z$を介して、推論モデル$q(z|x)$、生成モデル$p(x|z)$を用いる。
 
@@ -20,7 +21,11 @@ VAEでは$p_\theta(x)$を直接的に計算することは難しいという問�
 
 VAEの推論モデル$q_\phi(z|x)$は、入力データ$x$に対して潜在変数の分布を近似するものであり、ニューラルネットワークを用いて平均$\mu$と分散$\sigma^2$を出力することで，$z$が従うガウス分布$\mathcal{N}(\mu,\sigma^2)$を定義する。生成モデル$p_\theta(x|z)$では、潜在変数$z$を事前分布$p(z)$からサンプリングし、それに基づいて新しい画像を生成することが可能となる。
 
-VAEでは$p(x|z)$をガウス分布としてモデル化するため、再構成誤差は二乗誤差に一致する。しかしながら、二乗誤差は多峰的な分布に対して平均化を促す性質がある。その結果、高周波成分を正確に再現する鋭い画像よりも、平滑化された曖昧な画像の方が誤差が小さくなりやすく、VAEでは生成画像がぼやけやすいというアルゴリズム上の課題が存在する。
+VAEでは$p(x|z)$をガウス分布としてモデル化するため、再構成誤差は二乗誤差に一致する。しかし、二乗誤差は正解画像との差異をとるため、新しく生成した画像を評価する際に、高周波成分を正確に再現する鋭い画像よりも、平滑化された曖昧な画像の方が誤差が小さくなりやすい傾向がある。その結果、VAEでは生成画像がぼやけやすいというアルゴリズム上の課題が存在する。
+
+% VAEでは$p(x|z)$をガウス分布としてモデル化するため、再構成誤差は二乗誤差に一致する。しかし、二乗誤差は画素ごとの正解画像との差異を評価する指標であるため、新規に生成された画像を評価する際、高周波成分を正確に再現した鋭い画像よりも、平滑化された曖昧な画像の方が誤差が小さくなりやすい傾向がある。その結果、VAEでは生成画像がぼやけやすいというアルゴリズム上の課題が指摘されている。
+
+% 多峰的な分布に対して平均化を促す性質がある。その結果、高周波成分を正確に再現する鋭い画像よりも、平滑化された曖昧な画像の方が誤差が小さくなりやすく、VAEでは生成画像がぼやけやすいというアルゴリズム上の課題が存在する。
 
 
 \begin{figure}[htbp]
@@ -31,7 +36,11 @@ VAEでは$p(x|z)$をガウス分布としてモデル化するため、再構成
 \end{figure}
 
 \subsubsection{GAN}
-VAEと異なり，GAN\cite{goodfellow_generative_2014}は明示的な尤度関数$p_\theta(x)$や潜在変数の事後分布$q(z|x)$を定義せず、識別モデルを介して生成分布とデータ分布との差異を評価することで、分布全体を暗黙的に近似する生成モデルである。(\fref{fg:GAN_VAE})
+% VAEと異なり，GAN\cite{goodfellow_generative_2014}は明示的な尤度関数$p_\theta(x)$や潜在変数の事後分布$q(z|x)$を定義せず、識別モデルを介して生成分布とデータ分布との差異を評価することで、分布全体を暗黙的に近似する生成モデルである。(\fref{fg:GAN_VAE})
+
+VAEと異なり、GAN\cite{goodfellow_generative_2014}は潜在空間の推定を明示的に行わず、暗目的に$z\sim \mathcal{N}(0,I)$として潜在空間を定義する。そして、生成器の出力$G(z)$に対して、識別器が正解データと生成分布の差異を評価することで、画像の特徴を捉えた画像生成の方法を学習する。(\fref{fg:GAN_VAE})
+
+% 明示的な尤度関数$p_\theta(x)$や潜在変数の事後分布$q(z|x)$を定義せず、識別モデルを介して生成分布とデータ分布との差異を評価することで、分布全体を暗黙的に近似する生成モデルである。(\fref{fg:GAN_VAE})
 
 具体的には、Generatorとよばれる生成モデル$G(z)$とDiscriminatorと呼ばれる識別モデル$D(x)$を用いて、これらを敵対的に学習させることで画像のデータ分布を学習する。
 
@@ -118,9 +127,9 @@ KLダイバージェンスは非対称性を持ち、$D_{KL}(P||Q)\neq D_{KL}(Q|
 {\small
 \begin{align}
     &V(G)=\int p_{\text{data}}(x)\log{\dfrac{p_{\text{data}}}{p_{\text{data}}+p_g}}dx\notag\\
-    &　　+\int p_g(x)\log\left(1-\dfrac{p_{\text{data}}}{p_{\text{data}}+p_g}\right)dx\notag\\
+    &　　+\int p_g(x)\log\left(1-\dfrac{p_{\text{data}}}{p_{\text{data}}+p_g}\right)dx\notag\\\notag\\
     &=D_{KL}(p_{\text{data}}||(p_{\text{data}}+p_g))+\notag\\
-    &　　D_{KL}(p_{\text{data}}||(p_{\text{data}}+p_g))-\log4\notag\\
+    &　　D_{KL}(p_{\text{data}}||(p_{\text{data}}+p_g))-\log4\notag\\\notag\\
     &=2D_{JS}(p_{\text{data}}||p_g)-\log4 \label{eq:VG}
 \end{align}
 }
@@ -129,6 +138,8 @@ KLダイバージェンスは非対称性を持ち、$D_{KL}(P||Q)\neq D_{KL}(Q|
 % 以上の内容から、GANの理想的最適点では生成分布$p_g$と実データ$p_{\text{data}}$が一致し、その結果、識別器はすべての入力に対して$1/2$を出力する。
 
 以上の内容から、識別器を最適解$D^*_G(x)=1/2$の近傍で保った状態で、生成器に対してJSダイバージェンスの最小化を目指すことで、唯一の最適解$p_g=p_{\text{data}}$に収束することが分かる。
+
+
 \newpage
 \subsubsection{GANの学習の流れ}
 \eref{eq:minimax}をもとに、DiscriminatorおよびGeneratorの損失関数を$L_D、L_G$とすると、\eref{eq:LD}、\eref{eq:LG}のようになる。
@@ -154,9 +165,7 @@ Discriminatorの学習時の概要図を\fref{fg:D_train}に示す。Discriminat
 	\label{fg:D_train}
 \end{figure}
 
-Discriminatorの目標は$p_{\mathrm{data}}$と$p_g$を判別することであるから、学習時のラベルとしてFake=0, True=1とした場合、$D(G(z))=0,D(x)=1$となる。
-
-\eref{eq:BCE}を参考にすると、\eref{eq:LD}の損失は次式で表せる。
+Discriminatorの目標は$p_{\mathrm{data}}$と$p_g$を判別することであるから、Fake=0, True=1とした場合、$D(G(z))=0,D(x)=1$となる。\eref{eq:BCE}を参考にすると、\eref{eq:LD}の損失は次式で表せる。
 \begin{align}
     &BCE(D(x\sim p_{\text{data}}),1)=-\log(D(x))\notag\\
     &BCE(D(G(z)),0)=-\log(1-D(G(z)))\notag\\
@@ -169,7 +178,7 @@ Generatorの学習時の概要図を\fref{fg:D_train}に示す。Generator学習
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=65mm,keepaspectratio]{figure/G_train.png}
+	\includegraphics[width=60mm,keepaspectratio]{figure/G_train.png}
 	\caption{Generatorの学習時の概要図}
 	\label{fg:G_train}
 \end{figure}
@@ -191,7 +200,7 @@ GANにおける学習アルゴリズムをAlgorithm\ref{alg:gan_train}に示す�
     \begin{algorithmic}[1]
     \State \textbf{Input:} correct Image $p_{\mathrm{data}}(x)$, noise prior $z \sim \mathcal{N}(0, I)$, minibatch size $m$
     \State \textbf{Input:}learning rates $\eta_D,\eta_G$
-    \State Initialize parameters $\theta_d, \theta_g$
+    %\State Initialize parameters $\theta_d, \theta_g$
     \For{iteration $=1,2,\ldots$}
         
         \State Sample minibatch $\{x^{(i)}\}_{i=1}^{m} \sim p_{\mathrm{data}}(x)$
@@ -209,7 +218,7 @@ GANにおける学習アルゴリズムをAlgorithm\ref{alg:gan_train}に示す�
     \end{algorithmic}
 }
 \end{algorithm}
-
+\newpage
 
 \subsection{CNN}
 本章では、GeneratorおよびDiscriminatorのネットワークとして使用したCNN(Convolutional Neural Network)について説明する。基礎となるニューラルネットワーク、誤差逆伝播法については補足資料2に記述した。
@@ -235,6 +244,7 @@ CNNは画像認識のタスクにおいて優れた性能を示すことから�
 	\label{fg:CNN2}
 \end{figure}
 
+\newpage
 \subsection*{プーリング層}
 プーリング層では、畳み込み層によって得られた特徴マップを空間的に縮小する処理を行う。代表的な手法としてマックスプーリングがあり、局所領域内の最大値を出力として採用する。(\fref{fg:CNN3})
 \begin{figure}[htbp]
@@ -257,7 +267,7 @@ CNNでは、情報を抽出するため畳み込み層を通過するごとに�
 \fref{fg:CNN4}に示すように、strideで指定した行数分だけ入力データのピクセル間に0を追加する。
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN4.png}
+	\includegraphics[width=45mm,keepaspectratio]{figure/CNN4.png}
 	\caption{strideに応じたデータ拡張}
 	\label{fg:CNN4}
 \end{figure}
@@ -266,7 +276,7 @@ CNNでは、情報を抽出するため畳み込み層を通過するごとに�
 STEP2では、カーネルのサイズよりも1行少ない数だけ、余白の追加を行う。
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN5.png}
+	\includegraphics[width=45mm,keepaspectratio]{figure/CNN5.png}
 	\caption{ゼロパディング}
 	\label{fg:CNN5}
 \end{figure}
@@ -275,7 +285,7 @@ STEP2では、カーネルのサイズよりも1行少ない数だけ、余白�
 paddingで指定した行数分の余白を削除する。
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=40mm,keepaspectratio]{figure/CNN6.png}
+	\includegraphics[width=45mm,keepaspectratio]{figure/CNN6.png}
 	\caption{paddingに応じた、余白の削除}
 	\label{fg:CNN6}
 \end{figure}
