@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.141592653-p4.1.2-u2.00-250202-2.6 (utf8.sjis) (TeX Live 2025) (preloaded format=platex 2026.1.20)  27 JAN 2026 14:03
+This is e-upTeX, Version 3.141592653-p4.1.2-u2.00-250202-2.6 (utf8.sjis) (TeX Live 2025) (preloaded format=platex 2026.1.20)  29 JAN 2026 02:11
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -365,6 +365,9 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+) (c:/texlive/2025/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip18
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 \c@enumerate=\count327
  (c:/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-dvipdfmx.def
@@ -375,36 +378,36 @@ File: l3backend-dvipdfmx.def 2025-10-09 L3 backend support: dvipdfmx
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 121.
+(Font)              scaled to size 13.83836pt on input line 122.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 121.
+(Font)              scaled to size 13.83836pt on input line 122.
 LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 121.
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 122.
 LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 121.
+(Font)              scaled to size 13.83836pt on input line 122.
 LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 121.
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 122.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 121.
+(Font)              scaled to size 13.83836pt on input line 122.
  (./1st.tex
 LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <10> not available
 (Font)              Font shape `JT1/gt/m/n' tried instead on input line 1.
@@ -414,19 +417,153 @@ LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10> not available
 (Font)              Font shape `JY1/gt/m/n' tried instead on input line 1.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 9.60999pt on input line 1.
+
+
+LaTeX Warning: Reference `fg:1_soft' on page 1 undefined on input line 5.
+
+File: figure/1_soft.png Graphic file (type bmp)
+<figure/1_soft.png>
+LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
+(Font)              scaled to size 8.64899pt on input line 9.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 5.
+(Font)              scaled to size 8.64899pt on input line 9.
+
+LaTeX Warning: Reference `fg:1_fpga' on page 1 undefined on input line 13.
+
+File: figure/1_fpga.png Graphic file (type bmp)
+<figure/1_fpga.png>
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 4.805pt on input line 5.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 5.
- (c:/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
+(Font)              scaled to size 6.72699pt on input line 24.
+LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
+(Font)              scaled to size 4.805pt on input line 24.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 24.
+(c:/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 24.
  (c:/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 5.
+(Font)              scaled to size 6.72699pt on input line 24.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 4.8
+(Font)              scaled to size 4.805pt on input line 24.
+ [1
+
+
+]) (./2nd.tex
+
+LaTeX Warning: Citation `soumusho2024_information_communications_whitepaper' on page 2 undefined on input line 8.
+
+
+LaTeX Warning: Reference `fg:abata-' on page 2 undefined on input line 11.
+
+
+LaTeX Warning: Citation `yee_proteus_2007' on page 2 undefined on input line 11.
+
+File: figure/abata.png Graphic file (type bmp)
+<figure/abata.png>
+) (./2_add.tex [2]) (./3rd.tex [3
+
+]
+
+LaTeX Warning: Citation `kingma_auto-encoding_2022' on page 4 undefined on input line 15.
+
+
+LaTeX Warning: Reference `fg:VAE' on page 4 undefined on input line 15.
+
+File: figure/VAE.png Graphic file (type bmp)
+<figure/VAE.png>
+
+LaTeX Warning: Citation `goodfellow_generative_2014' on page 4 undefined on input line 41.
+
+
+LaTeX Warning: Reference `fg:GAN_VAE' on page 4 undefined on input line 41.
+
+LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
+(Font)              scaled to size 6.72699pt on input line 47.
+LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
+(Font)              scaled to size 4.805pt on input line 47.
+File: figure/GAN_VAE.png Graphic file (type bmp)
+<figure/GAN_VAE.png>
+[4
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 65--65
+[]\OT1/cmr/bx/n/10 GAN (Gen-er-a-tive Ad-ver-sar-ial
+ []
+
+File: figure/GAN.png Graphic file (type bmp)
+<figure/GAN.png>
+
+LaTeX Warning: Reference `eq:minimax' on page 5 undefined on input line 79.
+
+
+LaTeX Warning: Reference `eq:minimax' on page 5 undefined on input line 94.
+
+
+LaTeX Warning: Reference `eq:minimax' on page 5 undefined on input line 94.
+
+
+LaTeX Warning: Reference `eq:Dmax' on page 5 undefined on input line 94.
+
+LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
+(Font)              scaled to size 5.76599pt on input line 96.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 7.68799pt on input line 96.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 5.76599pt on input line 96.
+LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
+(Font)              scaled to size 5.76599pt on input line 100.
+
+LaTeX Warning: Reference `eq:Dmax' on page 5 undefined on input line 103.
+
+
+LaTeX Warning: Reference `eq:D*' on page 5 undefined on input line 103.
+
+
+LaTeX Warning: Reference `eq:KL' on page 5 undefined on input line 115.
+
+
+LaTeX Warning: Reference `eq:JS' on page 5 undefined on input line 121.
+
+[5]
+
+LaTeX Warning: Reference `eq:Dmax' on page 6 undefined on input line 126.
+
+
+LaTeX Warning: Reference `eq:Dmax' on page 6 undefined on input line 126.
+
+
+LaTeX Warning: Reference `eq:D*' on page 6 undefined on input line 126.
+
+
+LaTeX Warning: Reference `eq:KL' on page 6 undefined on input line 126.
+
+
+LaTeX Warning: Reference `eq:JS' on page 6 undefined on input line 126.
+
+
+LaTeX Warning: Reference `eq:VG' on page 6 undefined on input line 126.
+
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 8.64899pt on input line 128.
+
+LaTeX Warning: Reference `eq:VG' on page 6 undefined on input line 136.
+
+
+LaTeX Warning: Reference `eq:minimax' on page 6 undefined on input line 145.
+
+
+LaTeX Warning: Reference `eq:LD' on page 6 undefined on input line 145.
+
+
+LaTeX Warning: Reference `eq:LG' on page 6 undefined on input line 145.
+
+
+LaTeX Warning: Reference `eq:BCE' on page 6 undefined on input line 153.
+
+
+LaTeX Warning: Reference `fg:D_train' on page 6 undefined on input line 159.
+
+File: figure/D_train.png Graphic file (type b

@@ -1,9 +1,10 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{soumusho2024_information_communications_whitepaper}
 {総務省 情報通信白書編集委員会}.
 \newblock 令和6年版 情報通信白書.
 \newblock Technical report.
+\newblock \url{https://www.soumu.go.jp/johotsusintokei/whitepaper/ja/r06/pdf/00zentai.pdf}.
 
 \bibitem{yee_proteus_2007}
 Nick Yee and Jeremy Bailenson.
@@ -30,6 +31,10 @@ Bingqi Liu, Jiwei Lv, Xinyue Fan, Jie Luo, and Tianyi Zou.
 \newblock Application of an {Improved} {DCGAN} for {Image} {Generation}.
 \newblock {\em Mobile Information Systems}, Vol. 2022, No.~1, p. 9005552, 2022.
 \newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1155/2022/9005552.
+
+\bibitem{CharaMELNotion}
+ぴぽや -charamel- 2022.
+\newblock \url{https://pipoya.notion.site/CharaMEL-6fb3b97cc5f643e7a8025fce608e7050}.
 
 \bibitem{amd_ug1267_zcu104}
 {Advanced Micro Devices, Inc.}

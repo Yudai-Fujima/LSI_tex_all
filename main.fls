@@ -94,6 +94,8 @@ INPUT c:/texlive/2025/texmf-dist/tex/latex/xcolor/xcolor.sty
 INPUT c:/texlive/2025/texmf-dist/tex/latex/xcolor/xcolor.sty
 INPUT c:/texlive/2025/texmf-dist/tex/latex/graphics-cfg/color.cfg
 INPUT c:/texlive/2025/texmf-dist/tex/latex/graphics/mathcolor.ltx
+INPUT c:/texlive/2025/texmf-dist/tex/latex/url/url.sty
+INPUT c:/texlive/2025/texmf-dist/tex/latex/url/url.sty
 INPUT c:/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-dvipdfmx.def
 INPUT c:/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-dvipdfmx.def
 INPUT ./main.aux
@@ -114,6 +116,18 @@ INPUT 1st.tex
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/standard/tgoth10.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/jis/jisg.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
+INPUT ./figure/1_soft.png
+INPUT ./figure/1_soft.png
+INPUT ./figure/1_soft.png
+INPUT extractbb -B cropbox -O figure/1_soft.png
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/standard/tmin10.tfm
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/jis/jis.tfm
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmr9.tfm
+INPUT ./figure/1_fpga.png
+INPUT ./figure/1_fpga.png
+INPUT ./figure/1_fpga.png
+INPUT extractbb -B cropbox -O figure/1_fpga.png
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmss10.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/jis/jis.tfm
@@ -140,19 +154,16 @@ INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy7.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/jis/jisg.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/jis/jisg.tfm
+OUTPUT main.dvi
 INPUT ./2nd.tex
 INPUT ./2nd.tex
 INPUT ./2nd.tex
 INPUT ./2nd.tex
 INPUT 2nd.tex
-OUTPUT main.dvi
 INPUT ./figure/abata.png
 INPUT ./figure/abata.png
 INPUT ./figure/abata.png
 INPUT extractbb -B cropbox -O figure/abata.png
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/standard/tmin10.tfm
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/jis/jis.tfm
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmr9.tfm
 INPUT ./2_add.tex
 INPUT ./2_add.tex
 INPUT ./2_add.tex
@@ -163,7 +174,6 @@ INPUT ./3rd.tex
 INPUT ./3rd.tex
 INPUT ./3rd.tex
 INPUT 3rd.tex
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmss10.tfm
 INPUT ./figure/VAE.png
 INPUT ./figure/VAE.png
 INPUT ./figure/VAE.png
@@ -216,3 +226,49 @@ INPUT ./figure/G_train.png
 INPUT ./figure/G_train.png
 INPUT ./figure/G_train.png
 INPUT extractbb -B cropbox -O figure/G_train.png
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/ptex-fonts/standard/tgoth10.tfm
+INPUT ./figure/CNN1.png
+INPUT ./figure/CNN1.png
+INPUT ./figure/CNN1.png
+INPUT extractbb -B cropbox -O figure/CNN1.png
+INPUT ./figure/CNN2.png
+INPUT ./figure/CNN2.png
+INPUT ./figure/CNN2.png
+INPUT extractbb -B cropbox -O figure/CNN2.png
+INPUT ./figure/CNN3.png
+INPUT ./figure/CNN3.png
+INPUT ./figure/CNN3.png
+INPUT extractbb -B cropbox -O figure/CNN3.png
+INPUT ./figure/CNN4.png
+INPUT ./figure/CNN4.png
+INPUT ./figure/CNN4.png
+INPUT extractbb -B cropbox -O figure/CNN4.png
+INPUT ./figure/CNN5.png
+INPUT ./figure/CNN5.png
+INPUT ./figure/CNN5.png
+INPUT extractbb -B cropbox -O figure/CNN5.png
+INPUT ./figure/CNN6.png
+INPUT ./figure/CNN6.png
+INPUT ./figure/CNN6.png
+INPUT extractbb -B cropbox -O figure/CNN6.png
+INPUT ./4th.tex
+INPUT ./4th.tex
+INPUT ./4th.tex
+INPUT ./4th.tex
+INPUT 4th.tex
+INPUT ./figure/GANmodel.png
+INPUT ./figure/GANmodel.png
+INPUT ./figure/GANmodel.png
+INPUT extractbb -B cropbox -O figure/GANmodel.png
+INPUT ./figure/RGB_train2.png
+INPUT ./figure/RGB_train2.png
+INPUT ./figure/RGB_train2.png
+INPUT extractbb -B cropbox -O figure/RGB_train2.png
+INPUT ./figure/RGB_train.png
+INPUT ./figure/RGB_train.png
+INPUT ./figure/RGB_train.png
+INPUT extractbb -B cropbox -O figure/RGB_train.png
+INPUT ./figure/RGB_FPGA.png
+INPUT ./figure/RGB_FPGA.png
+INPUT ./figure/RGB_FPGA.png
+INPUT extractbb -B cropbox -O figure/RGB_FPGA.png
