@@ -1,5 +1,5 @@
 \clearpage
-\section{使用機器について+}
+\section{ハードウェア実装時の使用機器}
 本システムのハードウェア実装には、AMD $\rm{Zynq^{TM}}$ $\rm{UltraScale+^{TM}}$ MPSoC ZCU104 Evaluation Kitを用いた\cite{amd_ug1267_zcu104}。また、AMDの提供するPython productivity for Zynq(PYNQ)\cite{amd_pynq}と呼ばれるオープンソースプロジェクトを活用し、ブラウザ上からJupyter Notebookを通じてFPGAボードを動作させるシステムを構築した。本節では使用機器についての解説と仕様説明を行う。
 
 \subsection{Zynq UltraScale MPSoCの概要}
@@ -46,7 +46,8 @@ Python productivity for Zynq(PYNQ)は、Linux上で動作するPython APIを用�
 本章では設計したシステムのアーキテクチャからPS部、PL部それぞれの構成、およびその動作について説明する。
 
 \subsection{システムのアーキテクチャ}
-本システムのアーキテクチャは図\ref{fig:arch}のようになっている。Block RAM等のリソース量を考慮し、エミュレータで実装した学習したパラメータを使用して生成部のみの実装を行った。８章でも記述した通り、本システムは大きく分けてPS部とPL部に分かれている。PS部は、保存された入力データおよび重みをPL部に送る役割を担う。またPL部の動作を制御する制御信号を送ることで動作モードを遷移させ、PL部の動作を処理の進行に合わせて適切に変化させる役割も担っている。一方、PL部はPSとPL間の通信を担うAXI-LITE、PS側から送られたデータをGeneratorに適切な形、タイミングで転送するモジュール、そしてGeneratorの大きく分けて３つの回路で構成されている。これらのシステム全体の動作概要は以下の通りである。
+本システムのアーキテクチャは図\ref{fig:arch}のようになっている。Block RAM等のリソース量を考慮し、エミュレータで学習したパラメータを使用して生成部のみの実装を行った。
+本システムは大きく分けてPS部とPL部に分かれている。PS部は、保存された入力データおよび重みをPL部に送る役割を担う。またPL部の動作を制御する制御信号を送ることで動作モードを遷移させ、PL部の動作を処理の進行に合わせて適切に変化させる役割も担っている。一方、PL部はPSとPL間の通信を担うAXI-LITE、PS側から送られたデータをGeneratorに適切な形、タイミングで転送するモジュール、そしてGeneratorの大きく分けて３つの回路で構成されている。これらのシステム全体の動作概要は以下の通りである。
 \begin{enumerate}
     \item AXI-LITE形式でPS側からPL側に図中Input Vecotrで示される100次元入力を送信する
     \item AXI-LITE形式でGeneratorの入力用RAMにデータ転送する開始信号（Control signal）を送る
@@ -58,7 +59,7 @@ Python productivity for Zynq(PYNQ)は、Linux上で動作するPython APIを用�
     \item さらに3 - 7の手順を繰り返すことで4層分の演算を行う。この時、演算終了信号が送信される。
     \item ４層分の演算終了後、AXI-LITE形式でPL側が出力したアバター画像をPS側に送信する
 \end{enumerate}
-特に手順3-6については、図\ref{fig:cal_tejyun}で補足説明を行う。エミュレータで実装したCNNモデルのうち、特に１層目、２層目は図\ref{fig:cal_tejyun}のようになっている。１層目では100次元の入力ベクトルに対して$4\times4$のカーネルを$512\times100$要素掛け合わせることで出力を獲得し、これにReLU関数を適用したものを2層目の入力として用いる。このような試行を4層分繰り返すことでアバター画像を出力することができる。本回路では特に、それぞれの層の出力の１要素を求めるために必要な重みである図\ref{fig:cal_tejyun}中の1paked weight（$1\times100$要素）のみをPS部からPL部に送信する。そして、この重みと入力の掛け算を行う試行をそれぞれの要素の出力要素分行うことで１層分の計算を終了する回路とした。本回路構成を採用した理由と解説については、11章のハードウェア上の工夫点にて詳しく解説する。
+特に手順3-6については、図\ref{fig:cal_tejyun}で補足説明を行う。エミュレータで実装したCNNモデルのうち、特に１層目、２層目は図\ref{fig:cal_tejyun}のようになっている。１層目では入力された100次元の潜在ベクトルに対して$4\times4$のカーネルを$512\times100$要素掛け合わせることで出力を獲得し、これにReLU関数を適用したものを2層目の入力として用いる。このような試行を4層分繰り返すことでアバター画像を出力することができる。本回路では特に、それぞれの層の出力の１要素を求めるために必要な重みである図\ref{fig:cal_tejyun}中の1paked weight（$1\times100$要素）のみをPS部からPL部に送信する。そして、この重みと入力の掛け算を行う試行をそれぞれの要素の出力要素分行うことで１層分の計算を終了する回路とした。本回路構成を採用することにより、FPGAボードのPL側に保存される重みのパラメータ数は常に図\ref{fig:cal_tejyun}で示される1paked weight部分のみとなるため、Block RAMの使用量を大幅に減少させることができるメリットがある。特に本構成が拡張性の高いシステムに繋がる厳密な議論については、10章の「FPGA実装の中で工夫した点」で示す。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\linewidth]{fig_fuji/layer_caluculation.png}
@@ -76,7 +77,7 @@ Python productivity for Zynq(PYNQ)は、Linux上で動作するPython APIを用�
 
 \subsection{PL側の回路設計}
 \subsubsection*{\textbf{AXI-LITE}}
-本回路では、AXI-4という規格の中でもAXI-LITEを用いた通信方式を採用した。AXI規格とは、ARM社が使用を策定したバスプロトコルであり、開発者側は共通のインターフェースを用いてPSとPL間の通信を行う。特にAXI-LITE Moduleの回路構成を図\ref{fig:AXI-LITE}に示す。図\ref{fig:AXI-LITE}からわかるようにAXI-LITEはアドレス指定により異なる制御を行うことができる利点がある。本回路では特に表\ref{tb:AXI-seigyo}のようにアドレスマップを作成し、PSからAXI-LITEを通じて細かくPLの制御を行えるような設計とした。この設計により、前述した複雑な計算手順をPythonを利用して極めて正確かつ簡単に行うことができるような設計となっている。具体的に１つの層を例にとって、実際の動作手順を説明する。
+本回路では、AXI-4という規格の中でもAXI-LITEを用いた通信方式を採用した。AXI規格とは、ARM社が使用を策定したバスプロトコルであり、開発者側は共通のインターフェースを用いてPSとPL間の通信を行う。特にAXI-LITE Moduleの回路構成を図\ref{fig:AXI-LITE}に示す。図\ref{fig:AXI-LITE}からわかるようにAXI-LITEはアドレス指定により異なる制御を行うことができる利点がある。本回路では表\ref{tb:AXI-map}のようにアドレスマップを作成した。特にslv\_reg0, slv\_reg1を表\ref{tb:AXI-seigyo}のように設定することで、PSからAXI-LITEを通じて細かくPLの制御を行えるような設計とした。この設計により、前述した複雑な計算手順をPythonを利用して極めて正確かつ簡単に行うことができるような設計となっている。具体的に１つの層を例にとって、実際の動作手順を説明する。
 \begin{enumerate}
     \item 100次元入力を送信するため、slv\_reg0に00001をセットする（リセット信号はアクティブロー）
     \item GeneratorのRAMに入力信号を読み込ませるため、計算開始信号を立てる（slv\_reg0に00011）
@@ -95,6 +96,18 @@ Python productivity for Zynq(PYNQ)は、Linux上で動作するPython APIを用�
 	\label{fig:AXI-LITE}
 \end{figure}
 \begin{table}[htbp]
+    \caption{AXI-LITEのアドレスマップ}
+	\label{tb:AXI-map}
+	\centering
+    \begin{tabular}{cc}
+        Address (32bit) & data \\
+        0 & slv\_reg0 \\
+        1 & slv\_reg1 \\
+        2 & Input or Weight DATA \\
+        3 & Output DATA \\
+    \end{tabular}
+\end{table}
+\begin{table}[htbp]
     \caption{AXI-LITEの制御信号}
 	\label{tb:AXI-seigyo}
 	\centering
@@ -106,6 +119,10 @@ Python productivity for Zynq(PYNQ)は、Linux上で動作するPython APIを用�
          計算層選択   &   3-4       &             &   \\\hline
     \end{tabular}
 \end{table}
+
+\subsubsection*{\textbf{FIFO-A, FIFO-B, FIFO-C}}
+FIFOとは、AXI-LITEからPL側に書き込まれた値、またはPS側に書き込む値を一時的に格納し、格納した順に出力するモジュールである。本システムでは、FIFOを３つ搭載し、FIFO-Aには入力$z$である100次元の潜在ベクトルの転送、FIFO-Cには重み$Weight$の転送、FIFO-BにはGeneratorからの出力の転送を割り当てている。FIFO-A, FIFO-CにはどちらともにPS側がアドレス3を指定して書き込んだ値が入力されるが、slv\_reg0(2)の値がLowの時はFIFO-Aのみに書き込みが有効、Highの時はFIFO-Cのみに書き込みが有効となるように設計することでFIFOの分岐動作を実現した。
+
 
 \subsubsection*{\textbf{Input, output Signal concatenator}}
 Input signal concatenator, Output signal concatenatorはそれぞれ図\ref{fig:InOut}のようにあらわされる計算回路である。Input Signal cocatenatorでは、Generatorに対して必要な入力データを1CLKで渡すことを可能とするためにFIFO-Aから送られる32ビット幅の信号を繋げて１つの信号として送信する。一方、Output signal concatenatorではGeneratorからPS側に対して送られる$32\times32\times8$bitの信号をそれぞれ32ビットの信号に分けることで、本回路におけるAXI-LITE通信方式にあった形でPS側にデータ送信できるように加工する回路である。
@@ -525,13 +542,13 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 \subsection{演算処理の並列化}
 図\ref{fig:botole_cal}は本システムのうち、３層目の計算の126番目の計算におけるシミュレーション波形を抜き出したものである。その中でも白枠で示した部分が重みのLOADにかかる区間、赤枠で示した部分が入力と重みを用いて１出力チャネルを得る計算部分となっている。図\ref{fig:botole_cal}からわかるように実際に計算を行う部分が実行時間の中でも多くの割合を占めていることから、現在のアーキテクチャは演算ボトルネックであるといえる。そこで、演算処理の並列化を行うことを目指す。
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=1.0\linewidth]{figure/botole_cal.png}
     \caption{演算時間のボトルネック特定}
     \label{fig:botole_cal}
 \end{figure}
-\begin{figure*}[t]
+\begin{figure*}[h]
     \centering
     % RGB分割の概念図を想定
     \includegraphics[width=\textwidth, keepaspectratio]{figure/parallel_concept.png}
@@ -545,7 +562,7 @@ tanhやFIFOといった容量の少ないRAMやROMを合わせて格納するこ
 この課題を解決するため、Feature\_RAMを64bit（16bit$\times$4要素）、Accumulator\_RAMを128bit（32bit$\times$4要素）へとそれぞれ拡張し、演算コアであるkernel\_multipleを4系統並列に配置する設計変更を行う。これにより、1クロックの読み出しで、4要素分の入力値および蓄積値を一括して演算コアへ供給できる。
 
 また、演算後の4つの積和結果を単一データに統合するため、新たに結合モジュールConcatenatorを導入する。これにより、複数のBRAMを消費することなく、4つの独立した演算結果を128bitの単一データとして1クロックでメモリへ書き戻すことが可能となる。
-この帯域分割と物理的な並列化により、演算速度の約4倍へと向上させ、画像生成プロセス全体の劇的な高速化を目指す。
+特に図\ref{fig:botole_cal}のように、処理時間の大部分が計算時間になっているため、本並列化により計算時間は約4倍の33.33秒まで高速化できると予測できる。
 
 \subsubsection{4並列化した演算コアの設計}
 \begin{figure*}[t]
