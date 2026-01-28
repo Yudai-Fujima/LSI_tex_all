@@ -1,9 +1,36 @@
 \section{概要}
-今年度のLSIデザインコンテストにおける設計課題は「Generative Adversarial Networks（GAN）」である。GANは、画像生成、超解像、スタイル変換、異常検知などに用いられる生成ネットワークである。我々は、画像生成の応用として、様々な髪型、髪色、目、服のアバターの画像を学習されることで、データセットには含まれない新たなアバターを生成するGANの回路設計および実装を行った。本システムの特徴を以下に挙げる。
+今年度のLSIデザインコンテストにおける設計課題は「Generative Adversarial Networks（GAN）」である。GANは、画像生成、超解像、スタイル変換、異常検知などに用いられる生成ネットワークである。我々は、画像生成の応用として、様々な髪型、髪色、目、服のアバターの画像を学習されることで、データセットには含まれない新たなアバターを生成するGANの回路設計および実装を行った。
 
+% 本システムを実現するにあたり用いた、学習モデルの概念図を\ref{fg:1_soft}に示す。モデル中のGeneratorが画像生成ネットワークであり、4層の逆畳み込み層から構成される。入力は100次元の潜在ベクトルであり、出力は32×32の画像である。学習後、潜在ベクトルは画像の特徴を捉えたベクトルとして機能する。
+本システムの実現のために構成した学習モデルの概念図を図 \ref{fg:1_soft}に示す。本モデルにおける Generator は画像生成ネットワークであり、4層の逆畳み込み層から構成される。入力は100次元の潜在ベクトル、出力は32×32画素の画像である。学習後、潜在ベクトルは画像の特徴を表現するベクトルとして機能する。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/1_soft.png}
+	\caption{アバター作成のためのGANモデル\\　　　（学習イメージ）}
+	\label{fg:1_soft}
+\end{figure}
+
+今回、GANのFPGA実装にあたり、学習モデルのうちGenerator部分のみをFPGA に実装した。FPGA上に構成するGeneratorは、4層の逆畳み込み層からなる。学習済みGeneratorのパラメータをFPGAに実装することで、利用者は任意の潜在ベクトルを入力するだけで、新規のアバター画像を生成できる。(\fref{fg:1_fpga})
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=70mm,keepaspectratio]{figure/1_fpga.png}
+	\caption{FPGA実装部分の概念図\\　　（システム利用時の想定図）}
+	\label{fg:1_fpga}
+\end{figure}
+
+\newpage
+以下に、本レポートの目的および本システムの工夫点をまとめる。
+\subsubsection*{目的？}
+\textbf{「潜在ベクトル $z$（100次元）の入力に対し、新たなアバター画像を生成する Generator ネットワーク（4層の逆畳み込み層）の FPGA 実装」}
+
+\subsubsection*{工夫点(ソフトウェア)}
 \begin{enumerate}
-   \item ランダムノイズ（100次元）の入力$z$に対し、新たなアバター画像を生成するGeneratorネットワーク（CNN）のFPGA実装
-   \item ランダムノイズ$z$に対し、100次元のランダムベクトル$v1、v2$を用いて、$z$はR画像の学習、$z+v_1$はG画像の学習、$z+v_2$はB画像の学習を行うことで、一つのGeneratorネットワークでカラー画像の出力を実現
+   \item  一つの潜在ベクトル$z$の入力に対して、R・G・Bの3種類の画像を出力する学習モデルの構築\\（学習モデルは第5章、理論は補足資料1）
+   \item 二種類のDiscriminatorネットワークを用いた、カラー画像生成の精度向上
+   \item 固定小数点を意識したエミュレータ設計
+\end{enumerate}
+\subsubsection*{工夫点(ハードウェア)}
+\begin{enumerate}
    \item 大規模なCNNモデルの実装を目的とした，PSとPLが連携する協調型アーキテクチャ
    \item 今後の高速化、高解像度化が可能な拡張性のある構成
 \end{enumerate}
