@@ -272,3 +272,93 @@ INPUT ./figure/RGB_FPGA.png
 INPUT ./figure/RGB_FPGA.png
 INPUT ./figure/RGB_FPGA.png
 INPUT extractbb -B cropbox -O figure/RGB_FPGA.png
+INPUT ./figure/tb1.png
+INPUT ./figure/tb1.png
+INPUT ./figure/tb1.png
+INPUT extractbb -B cropbox -O figure/tb1.png
+INPUT ./figure/Generator.png
+INPUT ./figure/Generator.png
+INPUT ./figure/Generator.png
+INPUT extractbb -B cropbox -O figure/Generator.png
+INPUT ./figure/Discriminator_grey.png
+INPUT ./figure/Discriminator_grey.png
+INPUT ./figure/Discriminator_grey.png
+INPUT extractbb -B cropbox -O figure/Discriminator_grey.png
+INPUT ./figure/grid_3x3.png
+INPUT ./figure/grid_3x3.png
+INPUT ./figure/grid_3x3.png
+INPUT extractbb -B cropbox -O figure/grid_3x3.png
+INPUT ./figure/output.png
+INPUT ./figure/output.png
+INPUT ./figure/output.png
+INPUT extractbb -B cropbox -O figure/output.png
+INPUT ./figure/interp1.png
+INPUT ./figure/interp1.png
+INPUT ./figure/interp1.png
+INPUT extractbb -B cropbox -O figure/interp1.png
+INPUT ./CNN.tex
+INPUT ./CNN.tex
+INPUT ./CNN.tex
+INPUT ./CNN.tex
+INPUT CNN.tex
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm
+INPUT ./figure/CNN7.png
+INPUT ./figure/CNN7.png
+INPUT ./figure/CNN7.png
+INPUT extractbb -B cropbox -O figure/CNN7.png
+INPUT ./figure/CNN8.png
+INPUT ./figure/CNN8.png
+INPUT ./figure/CNN8.png
+INPUT extractbb -B cropbox -O figure/CNN8.png
+INPUT ./figure/CNN9.png
+INPUT ./figure/CNN9.png
+INPUT ./figure/CNN9.png
+INPUT extractbb -B cropbox -O figure/CNN9.png
+INPUT ./figure/CNN10.png
+INPUT ./figure/CNN10.png
+INPUT ./figure/CNN10.png
+INPUT extractbb -B cropbox -O figure/CNN10.png
+INPUT ./figure/CNN11.png
+INPUT ./figure/CNN11.png
+INPUT ./figure/CNN11.png
+INPUT extractbb -B cropbox -O figure/CNN11.png
+INPUT ./emulator.tex
+INPUT ./emulator.tex
+INPUT ./emulator.tex
+INPUT ./emulator.tex
+INPUT emulator.tex
+INPUT ./figure/tanh.png
+INPUT ./figure/tanh.png
+INPUT ./figure/tanh.png
+INPUT extractbb -B cropbox -O figure/tanh.png
+INPUT ./figure/kotei.png
+INPUT ./figure/kotei.png
+INPUT ./figure/kotei.png
+INPUT extractbb -B cropbox -O figure/kotei.png
+INPUT ./5th.tex
+INPUT ./5th.tex
+INPUT ./5th.tex
+INPUT ./5th.tex
+INPUT 5th.tex
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm
+INPUT ./fig_fuji/layer_caluculation.png
+INPUT ./fig_fuji/layer_caluculation.png
+INPUT ./fig_fuji/layer_caluculation.png
+INPUT extractbb -B cropbox -O fig_fuji/layer_caluculation.png
+INPUT ./fig_fuji/arch_lsi.png
+INPUT ./fig_fuji/arch_lsi.png
+INPUT ./fig_fuji/arch_lsi.png
+INPUT extractbb -B cropbox -O fig_fuji/arch_lsi.png
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmssbx10.tfm
+INPUT ./fig_fuji/AXILITE.png
+INPUT ./fig_fuji/AXILITE.png
+INPUT ./fig_fuji/AXILITE.png
+INPUT extractbb -B cropbox -O fig_fuji/AXILITE.png
+INPUT ./fig_fuji/inoutdata.png
+INPUT ./fig_fuji/inoutdata.png
+INPUT ./fig_fuji/inoutdata.png
+INPUT extractbb -B cropbox -O fig_fuji/inoutdata.png
+INPUT ./figure/image_top_module_new.png
+INPUT ./figure/image_top_module_new.png
+INPUT ./figure/image_top_module_new.png
+INPUT extractbb -B cropbox -O figure/image_top_module_new.png

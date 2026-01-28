@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.141592653-p4.1.2-u2.00-250202-2.6 (utf8.sjis) (TeX Live 2025) (preloaded format=platex 2026.1.20)  29 JAN 2026 02:11
+This is e-upTeX, Version 3.141592653-p4.1.2-u2.00-250202-2.6 (utf8.sjis) (TeX Live 2025) (preloaded format=platex 2026.1.20)  29 JAN 2026 02:13
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -566,4 +566,294 @@ LaTeX Warning: Reference `eq:BCE' on page 6 undefined on input line 153.
 
 LaTeX Warning: Reference `fg:D_train' on page 6 undefined on input line 159.
 
-File: figure/D_train.png Graphic file (type b
+File: figure/D_train.png Graphic file (type bmp)
+<figure/D_train.png>
+
+LaTeX Warning: Reference `eq:BCE' on page 6 undefined on input line 168.
+
+
+LaTeX Warning: Reference `eq:LD' on page 6 undefined on input line 168.
+
+
+LaTeX Warning: Reference `fg:D_train' on page 6 undefined on input line 177.
+
+[6]
+File: figure/G_train.png Graphic file (type bmp)
+<figure/G_train.png>
+
+
+LaTeX Warning: Reference `eq:BCE' on page 7 undefined on input line 186.
+
+
+LaTeX Warning: Reference `eq:LG' on page 7 undefined on input line 186.
+
+
+LaTeX Warning: Reference `alg:gan_train' on page 7 undefined on input line 195.
+
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <9> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 201.
+LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
+(Font)              scaled to size 8.64899pt on input line 201.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <9> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 201.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 8.64899pt on input line 201.
+
+LaTeX Warning: Reference `fg:CNN1' on page 7 undefined on input line 227.
+
+File: figure/CNN1.png Graphic file (type bmp)
+<figure/CNN1.png>
+
+LaTeX Warning: Reference `fg:CNN2' on page 7 undefined on input line 238.
+
+File: figure/CNN2.png Graphic file (type bmp)
+<figure/CNN2.png>
+[7]
+
+LaTeX Warning: Reference `fg:CNN3' on page 8 undefined on input line 249.
+
+File: figure/CNN3.png Graphic file (type bmp)
+<figure/CNN3.png>
+
+LaTeX Warning: Reference `fg:CNN4' on page 8 undefined on input line 267.
+
+File: figure/CNN4.png Graphic file (type bmp)
+<figure/CNN4.png>
+File: figure/CNN5.png Graphic file (type bmp)
+<figure/CNN5.png>
+File: figure/CNN6.png Graphic file (type bmp)
+<figure/CNN6.png>
+
+LaTeX Warning: Reference `fg:CNN2' on page 8 undefined on input line 293.
+
+) (./4th.tex [8]
+
+LaTeX Warning: Reference `fg:GANmodel' on page 9 undefined on input line 5.
+
+
+LaTeX Warning: Citation `radford_unsupervised_2016' on page 9 undefined on input line 5.
+
+File: figure/GANmodel.png Graphic file (type bmp)
+<figure/GANmodel.png>
+
+LaTeX Warning: Reference `fg:RGB_train2' on page 9 undefined on input line 34.
+
+File: figure/RGB_train2.png Graphic file (type bmp)
+<figure/RGB_train2.png>
+
+LaTeX Warning: Reference `fg:RGB_train' on page 9 undefined on input line 43.
+
+File: figure/RGB_train.png Graphic file (type bmp)
+<figure/RGB_train.png>
+[9
+
+]
+
+LaTeX Warning: Reference `fg:RGB_FPGA' on page 10 undefined on input line 57.
+
+File: figure/RGB_FPGA.png Graphic file (type bmp)
+<figure/RGB_FPGA.png>
+
+LaTeX Warning: Reference `tab:network_io' on page 10 undefined on input line 72.
+
+File: figure/tb1.png Graphic file (type bmp)
+<figure/tb1.png>
+
+LaTeX Warning: Reference `fg:Gen' on page 10 undefined on input line 104.
+
+File: figure/Generator.png Graphic file (type bmp)
+<figure/Generator.png>
+
+LaTeX Warning: Reference `fg:Dis_g' on page 10 undefined on input line 114.
+
+
+LaTeX Warning: Citation `liu_application_2022' on page 10 undefined on input line 114.
+
+File: figure/Discriminator_grey.png Graphic file (type bmp)
+<figure/Discriminator_grey.png>
+[10]
+
+LaTeX Warning: Citation `CharaMELNotion' on page 11 undefined on input line 140.
+
+
+LaTeX Warning: Reference `fig:grid_3x3' on page 11 undefined on input line 140.
+
+File: figure/grid_3x3.png Graphic file (type bmp)
+<figure/grid_3x3.png>
+
+LaTeX Warning: Reference `tab:training_param' on page 11 undefined on input line 152.
+
+
+LaTeX Warning: Reference `fg:output' on page 11 undefined on input line 182.
+
+
+LaTeX Warning: Reference `fg:output' on page 11 undefined on input line 182.
+
+
+LaTeX Warning: Reference `fg:output' on page 11 undefined on input line 182.
+
+File: figure/output.png Graphic file (type bmp)
+<figure/output.png>
+[11]
+
+LaTeX Warning: Reference `fg:hokan' on page 12 undefined on input line 193.
+
+File: figure/interp1.png Graphic file (type bmp)
+<figure/interp1.png>
+
+LaTeX Warning: Reference `fg:hokan' on page 12 undefined on input line 211.
+
+) (./CNN.tex [12]
+
+LaTeX Warning: Reference `fg:CNN7' on page 13 undefined on input line 10.
+
+File: figure/CNN7.png Graphic file (type bmp)
+<figure/CNN7.png>
+
+LaTeX Warning: Reference `fg:CNN8' on page 13 undefined on input line 20.
+
+
+LaTeX Warning: Reference `fg:CNN4' on page 13 undefined on input line 20.
+
+File: figure/CNN8.png Graphic file (type bmp)
+<figure/CNN8.png>
+
+LaTeX Warning: Reference `fg:CNN9' on page 13 undefined on input line 30.
+
+File: figure/CNN9.png Graphic file (type bmp)
+<figure/CNN9.png>
+
+LaTeX Warning: Reference `fg:CNN9' on page 13 undefined on input line 39.
+
+
+LaTeX Warning: Reference `fg:CNN10' on page 13 undefined on input line 42.
+
+[13]
+File: figure/CNN10.png Graphic file (type bmp)
+<figure/CNN10.png>
+
+
+LaTeX Warning: Reference `fg:CNN10' on page 14 undefined on input line 51.
+
+
+LaTeX Warning: Reference `eq:1retu' on page 14 undefined on input line 51.
+
+
+LaTeX Warning: Reference `fg:CNN11' on page 14 undefined on input line 56.
+
+
+LaTeX Warning: Reference `eq:zenretu' on page 14 undefined on input line 56.
+
+File: figure/CNN11.png Graphic file (type bmp)
+<figure/CNN11.png>
+) (./emulator.tex
+
+LaTeX Warning: Reference `tab:weight_minmax' on page 14 undefined on input line 6.
+
+
+LaTeX Warning: Reference `tab:weight_minmax' on page 14 undefined on input line 6.
+
+
+LaTeX Warning: Reference `tab:output_minmax' on page 14 undefined on input line 28.
+
+
+LaTeX Warning: Reference `tab:output_minmax' on page 14 undefined on input line 28.
+
+[14]
+
+LaTeX Warning: Reference `tab:output_minmax' on page 15 undefined on input line 57.
+
+
+LaTeX Warning: Reference `fg:tanh' on page 15 undefined on input line 59.
+
+
+LaTeX Warning: Reference `fg:tanh' on page 15 undefined on input line 59.
+
+File: figure/tanh.png Graphic file (type bmp)
+<figure/tanh.png>
+
+LaTeX Warning: Reference `fg:matome' on page 15 undefined on input line 69.
+
+File: figure/kotei.png Graphic file (type bmp)
+<figure/kotei.png>
+) (./5th.tex [15]
+
+LaTeX Warning: Citation `amd_ug1267_zcu104' on page 16 undefined on input line 3.
+
+
+LaTeX Warning: Citation `amd_pynq' on page 16 undefined on input line 3.
+
+
+LaTeX Warning: Reference `tb:pl' on page 16 undefined on input line 6.
+
+
+LaTeX Warning: Reference `tb:ps' on page 16 undefined on input line 6.
+
+
+LaTeX Warning: Reference `fig:arch' on page 16 undefined on input line 49.
+
+[16
+
+]
+
+LaTeX Warning: Reference `fig:cal_tejyun' on page 17 undefined on input line 62.
+
+
+LaTeX Warning: Reference `fig:cal_tejyun' on page 17 undefined on input line 62.
+
+
+LaTeX Warning: Reference `fig:cal_tejyun' on page 17 undefined on input line 62.
+
+
+LaTeX Warning: Reference `fig:cal_tejyun' on page 17 undefined on input line 62.
+
+File: fig_fuji/layer_caluculation.png Graphic file (type bmp)
+<fig_fuji/layer_caluculation.png>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+File: fig_fuji/arch_lsi.png Graphic file (type bmp)
+<fig_fuji/arch_lsi.png>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+LaTeX Font Info:    Font shape `JT1/gt/bx/n' in size <10> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 79.
+LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 79.
+LaTeX Font Info:    Font shape `JY1/gt/bx/n' in size <10> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 79.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 79.
+
+LaTeX Warning: Reference `fig:AXI-LITE' on page 17 undefined on input line 80.
+
+
+LaTeX Warning: Reference `fig:AXI-LITE' on page 17 undefined on input line 80.
+
+
+LaTeX Warning: Reference `tb:AXI-map' on page 17 undefined on input line 80.
+
+
+LaTeX Warning: Reference `tb:AXI-seigyo' on page 17 undefined on input line 80.
+
+[17]
+File: fig_fuji/AXILITE.png Graphic file (type bmp)
+<fig_fuji/AXILITE.png>
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Overfull \hbox (1.08589pt too wide) in paragraph at lines 114--121
+ [][] 
+ []
+
+[18]
+
+LaTeX Warning: Reference `fig:InOut' on page 19 undefined on input line 128.
+
+File: fig_fuji/inoutdata.png Graphic file (type bmp)
+<fig_fuji/inoutdata.png>
+
+LaTeX Warning: `h' 
